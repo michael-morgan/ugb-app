@@ -1,0 +1,16 @@
+Rules:
+First droppable component must be a bracket
+
+Components:
+
+Bracket
+-> Angle type (45, 90, 180)
+-> Angle orientation (bottom left/right, top left/right)
+-> 2 Droppable divs components (green highlight)
+
+Droppable div
+-> Type (bracket/timber)
+-> fulfilled (true/false)
+
+Timber
+-> Orientation (angled, vertical, horizontal)

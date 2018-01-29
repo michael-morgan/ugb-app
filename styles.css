@@ -1,0 +1,188 @@
+#root {
+    width: 3000px;
+    height: 3000px;
+}
+
+.bracket-container.first {
+    position: absolute;
+    top: 500px;
+    left: 500px;
+}
+
+.bracket-container {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 75px;
+    height: 75px;
+    background-color: black;
+}
+
+/* Bracket 90 Degrees Bottom Right */
+.bracket-ninety-br>.connection-one {
+    position: absolute;
+    top: 0;
+    left: -150px;
+    width: 150px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+.bracket-ninety-br>.connection-two {
+    position: absolute;
+    top: -150px;
+    left: 0;
+    width: 75px;
+    height: 150px;
+    background-color: lightgreen;
+}
+
+/* Bracket 90 Degrees Bottom Left */
+.bracket-ninety-bl>.connection-one {
+    position: absolute;
+    top: -150px;
+    left: 0;
+    width: 75px;
+    height: 150px;
+    background-color: lightgreen;
+}
+
+.bracket-ninety-bl>.connection-two {
+    position: absolute;
+    top: 0;
+    left: 75px;
+    width: 150px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+/* Bracket 90 Degrees Top Right */
+.bracket-ninety-tr>.connection-one {
+    position: absolute;
+    top: 0;
+    left: -150px;
+    width: 150px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+.bracket-ninety-tr>.connection-two {
+    position: absolute;
+    top: 75px;
+    left: 0;
+    width: 75px;
+    height: 150px;
+    background-color: lightgreen;
+}
+
+/* Bracket 90 Degrees Top Left */
+.bracket-ninety-tl>.connection-one {
+    position: absolute;
+    top: 75px;
+    left: 0;
+    width: 75px;
+    height: 150px;
+    background-color: lightgreen;
+}
+
+.bracket-ninety-tl>.connection-two {
+    position: absolute;
+    top: 0;
+    left: 75px;
+    width: 150px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+/* Connection Offsets */
+/*.bracket-ninety-br>.connection-one>.bracket-container {
+    left: -75px;
+}
+
+.bracket-ninety-br>.connection-two>.bracket-container {
+    top: -75px;
+}
+
+.bracket-ninety-bl>.connection-one>.bracket-container {
+    top: -75px;
+}
+
+.bracket-ninety-bl>.connection-two>.bracket-container {
+    left: 75px;
+}
+
+.bracket-ninety-tr>.connection-one>.bracket-container {
+    left: -75px;
+}
+
+.bracket-ninety-tr>.connection-two>.bracket-container {
+    top: 75px;
+}
+
+.bracket-ninety-tl>.connection-one>.bracket-container {
+    top: 75px;
+}
+
+.bracket-ninety-tl>.connection-two>.bracket-container {
+    left: 75px;
+}*/
+
+.timber-container {
+    position: relative;
+    top: 0;
+    left: 0;
+    background-color: brown;
+}
+
+.timber-horizontal {
+    width: 150px;
+    height: 75px;
+}
+
+.timber-vertical {
+    width: 75px;
+    height: 150px;
+}
+
+/*.timber-angled {
+    width: 75px;
+    height: 150px;
+}*/
+
+/* Timber Horizontal */
+.timber-horizontal>.connection-one {
+    position: absolute;
+    top: 0;
+    left: -75px;
+    width: 75px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+.timber-horizontal>.connection-two {
+    position: absolute;
+    top: 0;
+    left: 150px;
+    width: 75px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+/* Timber Vertical */
+.timber-vertical>.connection-one {
+    position: absolute;
+    top: -75px;
+    left: 0;
+    width: 75px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+.timber-vertical>.connection-two {
+    position: absolute;
+    top: 150px;
+    left: 0;
+    width: 75px;
+    height: 75px;
+    background-color: lightgreen;
+}
