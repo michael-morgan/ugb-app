@@ -1,24 +1,18 @@
 const width = window.outerWidth;
 const height = window.outerHeight;
 
+const xPadding = 5;
+const yPadding = 5;
+
 //window.scroll(width/2, height/2);
 
+/*
 const bracketMarkup = `
     <div class="bracket-container bracket-ninety-br first">
         <div class="connection-one"></div>
         <div class="connection-two"></div>
     </div>
 `;
-//document.getElementById("root").insertAdjacentHTML("beforeend", bracketMarkup);
-
-function createBracket({ degree, orientation, connectionOne, connectionTwo, first }) {
-    return `
-        <div class="bracket-container bracket-${degree}-${orientation} ${first && 'first'}">
-            ${connectionOne && '<div class="connection-one" onclick="handleConnection(this)"></div>'}
-            ${connectionTwo && '<div class="connection-two" onclick="handleConnection(this)"></div>'}
-        </div>
-    `;
-}
 
 const timberMarkup = `
     <div class="timber-container timber-horizontal">
@@ -26,15 +20,15 @@ const timberMarkup = `
         <div class="connection-two"></div>
     </div>
 `;
-//document.getElementById("root").insertAdjacentHTML("beforeend", timberMarkup);
+*/
 
-function createTimber({ orientation, connectionOne, connectionTwo }) {
-    return `
-        <div class="timber-container timber-${orientation}">
-            ${connectionOne && '<div class="connection-one" onclick="handleConnection(this)"></div>'}
-            ${connectionTwo && '<div class="connection-two" onclick="handleConnection(this)"></div>'}
-        </div>
-    `;
+function getNearbyElement(x, y, xoffset, yoffset) {
+    const element = document.elementFromPoint(x + xoffset, y + yoffset);
+    return (
+        element.className.includes("bracket") ||
+        element.className.includes("timber") ||
+        element.className.includes("connection")
+    ) ? element : null;
 }
 
 function createComponent({ type, degree, orientation, connectionOne, connectionTwo, first }) {
@@ -55,9 +49,6 @@ const markup = createComponent({
     first: true
 });
 document.getElementById("root").insertAdjacentHTML("beforeend", markup);
-
-function getTimberOrientation
-
 
 /* Events */
 window.handleConnection = (e) => {
@@ -92,45 +83,85 @@ window.handleConnection = (e) => {
 
         switch(parentOrientation) {
             case "br":
-                component.connectionOne = true;
+                
                 if(connection === "one") {
                     component.orientation = "horizontal";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        -xPadding, yPadding
+                    );
                 } else if (connection === "two") {
                     component.orientation = "vertical";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, -yPadding
+                    );
                 }
+
+                component.connectionOne = !nearbyElement;
             break;
             case "bl":
                 if(connection === "one") {
-                    component.connectionOne = true;
                     component.orientation = "vertical";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, -yPadding
+                    );
+
+                    component.connectionOne = !nearbyElement;
                 } else if (connection === "two") {
-                    component.connectionTwo = true;
                     component.orientation = "horizontal";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        (elementProperties.width + xPadding), yPadding
+                    );
+
+                    component.connectionTwo = !nearbyElement;
                 }
             break;
             case "tr":
                 if(connection === "one") {
-                    component.connectionOne = true;
                     component.orientation = "horizontal";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        -xPadding, yPadding
+                    );
+
+                    component.connectionOne = !nearbyElement;
                 } else if (connection === "two") {
-                    component.connectionTwo = true;
                     component.orientation = "vertical";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, (elementProperties.height + yPadding)
+                    );
+
+                    component.connectionTwo = !nearbyElement;
                 }
             break;
             case "tl":
                 if(connection === "one") {
                     component.orientation = "vertical";
 
-                    nearbyElement = document.elementFromPoint(
-                        elementProperties.x + (elementProperties.width / 2),
-                        elementProperties.y + (elementProperties.height + (75 / 2))
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, (elementProperties.height + yPadding)
                     );
-
-                    component.connectionTwo = !nearbyElement;
                 } else if (connection === "two") {
-                    component.connectionTwo = true;
                     component.orientation = "horizontal";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        (elementProperties.width + xPadding), yPadding
+                    );
                 }
+
+                component.connectionTwo = !nearbyElement;
             break;
         }
     } else if (parentType === "timber") {
@@ -140,9 +171,9 @@ window.handleConnection = (e) => {
         // For now set all brackets to 90 degrees
         component.degree = "ninety";
 
-        const bracketOrientation = e.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[1];
+        const previousBracketOrientation = e.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[1];
 
-        switch(bracketOrientation) {
+        switch(previousBracketOrientation) {
             case "br":
                 if (parentOrientation === "horizontal") {
                     component.connectionOne = true;
@@ -179,6 +210,11 @@ window.handleConnection = (e) => {
                         elementProperties.y + (elementProperties.height * 2)
                     );
 
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        (elementProperties.width / 2), (elementProperties.height * 2) 
+                    );
+
                     component.connectionTwo = !nearbyElement;
                 } else if (parentOrientation === "vertical") {
                     component.connectionTwo = true;
@@ -187,6 +223,8 @@ window.handleConnection = (e) => {
             break;
         }
     }
+
+    console.log("nearbyElement: ", nearbyElement);
 
     console.log(component);
 
@@ -202,7 +240,7 @@ window.handleConnection = (e) => {
             nearbyElement.insertAdjacentHTML("beforeend", createComponent({
                 type: "bracket",
                 degree: "ninety",
-                orientation: "bl"
+                orientation: "br"
             }));
         }
 

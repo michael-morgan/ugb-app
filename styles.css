@@ -1,6 +1,7 @@
 #root {
-    width: 3000px;
-    height: 3000px;
+    width: 1920px;
+    height: 1080px;
+    background-image: url(house_test.jpg);
 }
 
 .bracket-container.first {
@@ -93,39 +94,6 @@
     height: 75px;
     background-color: lightgreen;
 }
-
-/* Connection Offsets */
-/*.bracket-ninety-br>.connection-one>.bracket-container {
-    left: -75px;
-}
-
-.bracket-ninety-br>.connection-two>.bracket-container {
-    top: -75px;
-}
-
-.bracket-ninety-bl>.connection-one>.bracket-container {
-    top: -75px;
-}
-
-.bracket-ninety-bl>.connection-two>.bracket-container {
-    left: 75px;
-}
-
-.bracket-ninety-tr>.connection-one>.bracket-container {
-    left: -75px;
-}
-
-.bracket-ninety-tr>.connection-two>.bracket-container {
-    top: 75px;
-}
-
-.bracket-ninety-tl>.connection-one>.bracket-container {
-    top: 75px;
-}
-
-.bracket-ninety-tl>.connection-two>.bracket-container {
-    left: 75px;
-}*/
 
 .timber-container {
     position: relative;
