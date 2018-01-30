@@ -4,6 +4,21 @@ const height = window.outerHeight;
 const xPadding = 5;
 const yPadding = 5;
 
+const orientations = {
+    "timber": {
+        "br": { "one": "horizontal", "two": "vertical" },
+        "bl": { "one": "vertical", "two": "horizontal" },
+        "tr": { "one": "horizontal", "two": "vertical" },
+        "tl": { "one": "vertical", "two": "horizontal" }
+    },
+    "bracket": {
+        "br": { "horizontal": "bl", "vertical": "tr" },
+        "bl": { "horizontal": "br", "vertical": "tl" },
+        "tr": { "horizontal": "tl", "vertical": "br" },
+        "tl": { "horizontal": "tr", "vertical": "bl" }
+    }
+};
+
 //window.scroll(width/2, height/2);
 
 /*
@@ -80,20 +95,16 @@ window.handleConnection = (e) => {
 
     if (parentType === "bracket") {
         component.type = "timber";
+        component.orientation = orientations[component.type][parentOrientation][connection];
 
         switch(parentOrientation) {
             case "br":
-                
                 if(connection === "one") {
-                    component.orientation = "horizontal";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
                     );
                 } else if (connection === "two") {
-                    component.orientation = "vertical";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
@@ -104,8 +115,6 @@ window.handleConnection = (e) => {
             break;
             case "bl":
                 if(connection === "one") {
-                    component.orientation = "vertical";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
@@ -113,8 +122,6 @@ window.handleConnection = (e) => {
 
                     component.connectionOne = !nearbyElement;
                 } else if (connection === "two") {
-                    component.orientation = "horizontal";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
@@ -125,8 +132,6 @@ window.handleConnection = (e) => {
             break;
             case "tr":
                 if(connection === "one") {
-                    component.orientation = "horizontal";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
@@ -134,8 +139,6 @@ window.handleConnection = (e) => {
 
                     component.connectionOne = !nearbyElement;
                 } else if (connection === "two") {
-                    component.orientation = "vertical";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
@@ -146,15 +149,11 @@ window.handleConnection = (e) => {
             break;
             case "tl":
                 if(connection === "one") {
-                    component.orientation = "vertical";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
                     );
                 } else if (connection === "two") {
-                    component.orientation = "horizontal";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
@@ -172,19 +171,16 @@ window.handleConnection = (e) => {
         component.degree = "ninety";
 
         const previousBracketOrientation = e.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[1];
+        component.orientation = orientations[component.type][previousBracketOrientation][parentOrientation];
 
         switch(previousBracketOrientation) {
             case "br":
                 if (parentOrientation === "horizontal") {
-                    component.orientation = "bl";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
                     );
                 } else if (parentOrientation === "vertical") {
-                    component.orientation = "tr";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
@@ -195,15 +191,11 @@ window.handleConnection = (e) => {
             break;
             case "bl":
                 if (parentOrientation === "horizontal") {
-                    component.orientation = "br";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
                     );
                 } else if (parentOrientation === "vertical") {
-                    component.orientation = "tl";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
@@ -214,15 +206,11 @@ window.handleConnection = (e) => {
             break;
             case "tr":
                 if (parentOrientation === "horizontal") {
-                    component.orientation = "tl";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
                     );
                 } else if (parentOrientation === "vertical") {
-                    component.orientation = "br";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
@@ -233,15 +221,11 @@ window.handleConnection = (e) => {
             break;
             case "tl":
                 if (parentOrientation === "horizontal") {
-                    component.orientation = "tr";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
                     );
                 } else if (parentOrientation === "vertical") {
-                    component.orientation = "bl";
-
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
@@ -266,28 +250,40 @@ window.handleConnection = (e) => {
             degree: null,
             orientation: null,
         };
+        let nearbyElementParentOrientation = null;
 
         if (nearbyElement.parentElement.className.includes("bracket")) {
             nearbyElementComponent.type = "timber";
             
-            const nearbyElementParentOrientation = nearbyElement.parentElement.classList.item(1).split("-").slice(1)[1];
+            nearbyElementParentOrientation = nearbyElement
+                                                .parentElement
+                                                .classList.item(1).split("-").slice(1)[1];
             const nearbyElementConnection = nearbyElement.className.split("-").slice(1);
-            
-            
 
-            console.log("Nearby filled!");
-            nearbyElement.insertAdjacentHTML("beforeend", createComponent({
-                type: "timber",
-                orientation: ""
-            }));
+            nearbyElementComponent.orientation = orientations
+                                                    [nearbyElementComponent.type]
+                                                    [nearbyElementParentOrientation]
+                                                    [nearbyElementConnection];
         } else if (nearbyElement.parentElement.className.includes("timber")) {
             nearbyElementComponent.type = "bracket";
             nearbyElementComponent.degree = "ninety";
-            nearbyElementComponent.orientation = "br";
 
-            nearbyElement.insertAdjacentHTML("beforeend", createComponent(nearbyElementComponent));
+            const previousNearbyBracketOrientation = nearbyElement
+                                                        .parentElement
+                                                        .parentElement
+                                                        .parentElement
+                                                        .classList.item(1).split("-").slice(1)[1];
+            nearbyElementParentOrientation = nearbyElement
+                                                .parentElement
+                                                .classList.item(1).split("-").slice(1)[0];
+
+            nearbyElementComponent.orientation = orientations
+                                                    [nearbyElementComponent.type]
+                                                    [previousNearbyBracketOrientation]
+                                                    [nearbyElementParentOrientation];
         }
 
+        nearbyElement.insertAdjacentHTML("beforeend", createComponent(nearbyElementComponent));
         nearbyElement.removeAttribute("onclick");
     }
 
