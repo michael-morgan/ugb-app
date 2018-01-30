@@ -6,8 +6,9 @@
 
 .bracket-container.first {
     position: absolute;
-    top: 500px;
-    left: 500px;
+    top: 1000px;
+    left: 1200px;
+    transform: rotate(10deg);
 }
 
 .bracket-container {

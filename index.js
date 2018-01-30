@@ -176,72 +176,116 @@ window.handleConnection = (e) => {
         switch(previousBracketOrientation) {
             case "br":
                 if (parentOrientation === "horizontal") {
-                    component.connectionOne = true;
                     component.orientation = "bl";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, -yPadding
+                    );
                 } else if (parentOrientation === "vertical") {
-                    component.connectionOne = true;
                     component.orientation = "tr";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        -xPadding, yPadding
+                    );
                 }
+
+                component.connectionOne = !nearbyElement;
             break;
             case "bl":
                 if (parentOrientation === "horizontal") {
-                    component.connectionTwo = true;
                     component.orientation = "br";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, -yPadding
+                    );
                 } else if (parentOrientation === "vertical") {
-                    component.connectionTwo = true;
                     component.orientation = "tl";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        (elementProperties.width + xPadding), yPadding
+                    );
                 }
+
+                component.connectionTwo = !nearbyElement;
             break;
             case "tr":
                 if (parentOrientation === "horizontal") {
-                    component.connectionOne = true;
                     component.orientation = "tl";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, (elementProperties.height + yPadding)
+                    );
                 } else if (parentOrientation === "vertical") {
-                    component.connectionOne = true;
                     component.orientation = "br";
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        -xPadding, yPadding
+                    );
                 }
+
+                component.connectionOne = !nearbyElement;
             break;
             case "tl":
                 if (parentOrientation === "horizontal") {
                     component.orientation = "tr";
 
-                    nearbyElement = document.elementFromPoint(
-                        elementProperties.x + (elementProperties.width / 2),
-                        elementProperties.y + (elementProperties.height * 2)
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, (elementProperties.height + yPadding)
                     );
+                } else if (parentOrientation === "vertical") {
+                    component.orientation = "bl";
 
                     nearbyElement = getNearbyElement(
                         elementProperties.x, elementProperties.y,
-                        (elementProperties.width / 2), (elementProperties.height * 2) 
+                        (elementProperties.width + xPadding), yPadding
                     );
-
-                    component.connectionTwo = !nearbyElement;
-                } else if (parentOrientation === "vertical") {
-                    component.connectionTwo = true;
-                    component.orientation = "bl";
                 }
+
+                component.connectionTwo = !nearbyElement;
             break;
         }
     }
 
-    console.log("nearbyElement: ", nearbyElement);
+    console.log("nearbyElement: ");
+    console.dir(nearbyElement);
 
-    console.log(component);
+    console.log("New Component: ", component);
 
     if (nearbyElement &&
     nearbyElement.className.includes("connection") &&
     nearbyElement.children.length === 0) {
+        let nearbyElementComponent = {
+            type: null,
+            degree: null,
+            orientation: null,
+        };
+
         if (nearbyElement.parentElement.className.includes("bracket")) {
+            nearbyElementComponent.type = "timber";
+            
             const nearbyElementParentOrientation = nearbyElement.parentElement.classList.item(1).split("-").slice(1)[1];
+            const nearbyElementConnection = nearbyElement.className.split("-").slice(1);
+            
+            
 
             console.log("Nearby filled!");
-            nearbyElement.insertAdjacentHTML("beforeend", createComponent({}));
-        } else if (nearbyElement.parentElement.className.includes("timber")) {
             nearbyElement.insertAdjacentHTML("beforeend", createComponent({
-                type: "bracket",
-                degree: "ninety",
-                orientation: "br"
+                type: "timber",
+                orientation: ""
             }));
+        } else if (nearbyElement.parentElement.className.includes("timber")) {
+            nearbyElementComponent.type = "bracket";
+            nearbyElementComponent.degree = "ninety";
+            nearbyElementComponent.orientation = "br";
+
+            nearbyElement.insertAdjacentHTML("beforeend", createComponent(nearbyElementComponent));
         }
 
         nearbyElement.removeAttribute("onclick");
