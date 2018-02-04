@@ -6,11 +6,39 @@
 
         <title>UGB App | Home</title>
         
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/onsenui/css/onsenui.css">
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
         <link rel="stylesheet" type="text/css" href="./styles.css">
     </head>
     <body>
-        <div id="root"></div>
+        <ons-splitter>
+            <ons-splitter-side id="menu" width="60%" collapse>
+                <ons-page>
+                    <ons-list>
+                        <ons-list-item tappable>New</ons-list-item>
+                        <ons-list-item tappable>Open</ons-list-item>
+                        <ons-list-item tappable>Save</ons-list-item>
+                    </ons-list>
+                </ons-page>
+            </ons-splitter-side>
+            <ons-splitter-content>
+                <ons-page>
+                    <ons-toolbar>
+                        <div class="left">
+                            <ons-toolbar-button onclick="openSplitterSide()">
+                                <ons-icon icon="md-menu"></ons-icon>
+                            </ons-toolbar-button>
+                        </div>
+                        <div class="center">
+                            $400.00
+                        </div>
+                    </ons-toolbar>
+                    <div id="root"></div>
+                </ons-page>
+            </ons-splitter-content>
+        </ons-splitter>
 
+        <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
         <script src="./index.js"></script>
     </body>
 </html>

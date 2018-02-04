@@ -290,3 +290,7 @@ window.handleConnection = (e) => {
     e.insertAdjacentHTML("beforeend", createComponent(component));
     e.removeAttribute("onclick");
 };
+
+window.openSplitterSide = () => {
+    document.getElementById('menu').open();
+};
