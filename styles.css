@@ -155,3 +155,8 @@
     height: 75px;
     background-color: lightgreen;
 }
+
+/* Menu Styling */
+#menu h1 {
+    text-align: center;
+}

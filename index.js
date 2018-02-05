@@ -19,7 +19,7 @@ const orientations = {
     }
 };
 
-//window.scroll(width/2, height/2);
+window.scroll(width/2, height/2);
 
 /*
 const bracketMarkup = `
@@ -86,7 +86,7 @@ window.handleConnection = (e) => {
     console.log("Parent orientation: ", parentOrientation);
     const parentDegree = props[0];
     console.log("Parent degree: ", parentDegree);
-    
+
     const connection = e.className.split("-")[1];
     console.log("Connection: ", connection);
 
@@ -254,7 +254,7 @@ window.handleConnection = (e) => {
 
         if (nearbyElement.parentElement.className.includes("bracket")) {
             nearbyElementComponent.type = "timber";
-            
+
             nearbyElementParentOrientation = nearbyElement
                                                 .parentElement
                                                 .classList.item(1).split("-").slice(1)[1];
