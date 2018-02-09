@@ -6,8 +6,8 @@
 
 .bracket-container.first {
     position: absolute;
-    top: 1000px;
-    left: 1200px;
+    /*top: 1000px;
+    left: 1200px;*/
     /*transform: rotate(4deg);*/
 }
 
@@ -158,5 +158,10 @@
 
 /* Menu Styling */
 #menu h1 {
+    text-align: center;
+}
+
+/* Dialog Styling */
+#bracket-dialog>div, #timber-dialog>div {
     text-align: center;
 }

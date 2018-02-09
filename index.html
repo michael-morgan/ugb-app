@@ -54,6 +54,56 @@
             </ons-splitter-content>
         </ons-splitter>
 
+
+        <!-- Dialog Templates -->
+        <template id="bracket-dialog.html">
+            <ons-dialog id="bracket-dialog">
+                <div>
+                    <h2>Place Bracket</h2>
+                    <ons-list>
+                        <ons-list-header>Color</ons-list-header>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="color" input-id="rdo-black" checked></ons-radio>
+                            </label>
+                            <label for="rdo-black" class="center">Black</label>
+                        </ons-list-item>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="color" input-id="rdo-copper"></ons-radio>
+                            </label>
+                            <label for="rdo-copper" class="center">Copper</label>
+                        </ons-list-item>
+                    </ons-list>
+                    <ons-button onclick="dialog('bracket', 'hide')">Place</ons-button>
+                </div>
+            </ons-dialog>
+        </template>
+
+        <template id="timber-dialog.html">
+            <ons-dialog id="timber-dialog">
+                <div>
+                    <h2>Place Timber</h2>
+                    <ons-list>
+                        <ons-list-header>Color</ons-list-header>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="color" input-id="rdo-chestnut" checked></ons-radio>
+                            </label>
+                            <label for="rdo-chestnut" class="center">Chestnut</label>
+                        </ons-list-item>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="color" input-id="rdo-grey"></ons-radio>
+                            </label>
+                            <label for="rdo-grey" class="center">Grey</label>
+                        </ons-list-item>
+                    </ons-list>
+                    <ons-button onclick="dialog('timber', 'hide')">Place</ons-button>
+                </div>
+            </ons-dialog>
+        </template>
+
         <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
         <script src="./index.js"></script>
     </body>

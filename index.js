@@ -21,22 +21,6 @@ const orientations = {
 
 window.scroll(width/2, height/2);
 
-/*
-const bracketMarkup = `
-    <div class="bracket-container bracket-ninety-br first">
-        <div class="connection-one"></div>
-        <div class="connection-two"></div>
-    </div>
-`;
-
-const timberMarkup = `
-    <div class="timber-container timber-horizontal">
-        <div class="connection-one"></div>
-        <div class="connection-two"></div>
-    </div>
-`;
-*/
-
 function getNearbyElement(x, y, xoffset, yoffset) {
     const element = document.elementFromPoint(x + xoffset, y + yoffset);
     return (
@@ -63,7 +47,25 @@ const markup = createComponent({
     connectionTwo: true,
     first: true
 });
-document.getElementById("root").insertAdjacentHTML("beforeend", markup);
+//document.getElementById("root").insertAdjacentHTML("beforeend", markup);
+
+window.dialog = function(type, state) {
+    const dialog = document.getElementById(`${type}-dialog`);
+    if (state === "show") {
+        try {
+            dialog.show();
+        } catch(e) {
+            console.log(`${type} dialog not found. Creating..`);
+            ons.createDialog(`${type}-dialog.html`).then(function(dialog) {
+                dialog.show();
+            });
+        }
+    } else {
+        try {
+            dialog.hide();
+        } catch(e) {}
+    }
+}
 
 /* Events */
 window.handleConnection = (e) => {
@@ -292,5 +294,19 @@ window.handleConnection = (e) => {
 };
 
 window.openSplitterSide = () => {
-    document.getElementById('menu').open();
+    document.getElementById("menu").open();
 };
+
+function handleClick(e) {
+    console.log(e);
+    dialog("bracket", "show");
+    /*const rootElement = document.getElementById("root");
+    if (rootElement.childElementCount === 0) {
+        document.getElementById("root").insertAdjacentHTML("beforeend", markup);
+        const firstBracket = document.querySelector(".bracket-container.first");
+        firstBracket.style.top = `${(e.offsetY - firstBracket.clientHeight / 2)}px`;
+        firstBracket.style.left = `${(e.offsetX - (firstBracket.clientWidth / 2))}px`;
+    }*/
+}
+
+document.getElementById("root").addEventListener("click", handleClick, true);
