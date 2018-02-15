@@ -75,7 +75,55 @@
                             <label for="rdo-copper" class="center">Copper</label>
                         </ons-list-item>
                     </ons-list>
-                    <ons-button onclick="dialog('bracket', 'hide')">Place</ons-button>
+                    <ons-list>
+                        <ons-list-header>Degree</ons-list-header>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="degree" input-id="rdo-ninety" checked></ons-radio>
+                            </label>
+                            <label for="rdo-ninety" class="center">90</label>
+                        </ons-list-item>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="degree" input-id="rdo-one-eighty"></ons-radio>
+                            </label>
+                            <label for="rdo-one-eighty" class="center">180</label>
+                        </ons-list-item>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="degree" input-id="rdo-fourty-five"></ons-radio>
+                            </label>
+                            <label for="rdo-fourty-five" class="center">45</label>
+                        </ons-list-item>
+                    </ons-list>
+                    <ons-list>
+                        <ons-list-header>Orientation</ons-list-header>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="orientation" input-id="rdo-tl" checked></ons-radio>
+                            </label>
+                            <label for="rdo-tl" class="center">Top Left</label>
+                        </ons-list-item>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="orientation" input-id="rdo-tr"></ons-radio>
+                            </label>
+                            <label for="rdo-tr" class="center">Top Right</label>
+                        </ons-list-item>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="orientation" input-id="rdo-bl"></ons-radio>
+                            </label>
+                            <label for="rdo-bl" class="center">Bottom Left</label>
+                        </ons-list-item>
+                        <ons-list-item tappable>
+                            <label class="left">
+                                <ons-radio name="orientation" input-id="rdo-br"></ons-radio>
+                            </label>
+                            <label for="rdo-br" class="center">Bottom Right</label>
+                        </ons-list-item>
+                    </ons-list>
+                    <ons-button onclick="applyConnection()">Place</ons-button>
                 </div>
             </ons-dialog>
         </template>
@@ -99,7 +147,7 @@
                             <label for="rdo-grey" class="center">Grey</label>
                         </ons-list-item>
                     </ons-list>
-                    <ons-button onclick="dialog('timber', 'hide')">Place</ons-button>
+                    <ons-button onclick="applyConnection()">Place</ons-button>
                 </div>
             </ons-dialog>
         </template>

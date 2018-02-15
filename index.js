@@ -19,6 +19,11 @@ const orientations = {
     }
 };
 
+/* Locals */
+var clickedConnection;
+var recentlyAdded = [], recentlyRemoved = [];
+var mouseEvent;
+
 window.scroll(width/2, height/2);
 
 function getNearbyElement(x, y, xoffset, yoffset) {
@@ -33,10 +38,26 @@ function getNearbyElement(x, y, xoffset, yoffset) {
 function createComponent({ type, degree, orientation, connectionOne, connectionTwo, first }) {
     return `
         <div class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation} ${first ? 'first' : ''}">
-            ${connectionOne ? '<div class="connection-one" onclick="handleConnection(this)"></div>' : ''}
-            ${connectionTwo ? '<div class="connection-two" onclick="handleConnection(this)"></div>' : ''}
+            ${connectionOne ? '<div class="connection-one" onclick="connectionClick(this)"></div>' : ''}
+            ${connectionTwo ? '<div class="connection-two" onclick="connectionClick(this)"></div>' : ''}
         </div>
     `;
+}
+
+function connectionParentType(e) {
+    return e.parentElement.classList.item(0).split("-")[0];
+}
+
+function connectionParentProps(e) {
+    return e.parentElement.classList.item(1).split("-").slice(1);
+}
+
+function connectionType(e) {
+    return e.className.split("-")[1];
+}
+
+function swapType(type) {
+    return type === "timber" ? "bracket" : "timber";
 }
 
 const markup = createComponent({
@@ -67,8 +88,7 @@ window.dialog = function(type, state) {
     }
 }
 
-/* Events */
-window.handleConnection = (e) => {
+function handleConnection(e) {
     console.dir(e);
 
     let component = {
@@ -80,16 +100,16 @@ window.handleConnection = (e) => {
         first: null,
     };
 
-    const parentType = e.parentElement.classList.item(0).split("-")[0];
+    const parentType = connectionParentType(e);
     console.log("Parent type: ", parentType);
 
-    const props = e.parentElement.classList.item(1).split("-").slice(1);
-    const parentOrientation = props[+(props.length > 1)];
+    const parentProps = connectionParentProps(e);
+    const parentOrientation = parentProps[+(parentProps.length > 1)];
     console.log("Parent orientation: ", parentOrientation);
-    const parentDegree = props[0];
+    const parentDegree = parentProps[0];
     console.log("Parent degree: ", parentDegree);
 
-    const connection = e.className.split("-")[1];
+    const connection = connectionType(e);
     console.log("Connection: ", connection);
 
     const elementProperties = e.getBoundingClientRect();
@@ -291,22 +311,62 @@ window.handleConnection = (e) => {
 
     e.insertAdjacentHTML("beforeend", createComponent(component));
     e.removeAttribute("onclick");
+
+    recentlyAdded.push(e.firstChild);
+
+    dialog(`${swapType(parentType)}`, "hide");
+}
+
+/* Events */
+window.connectionClick = (e) => {
+    clickedConnection = e;
+    console.log("Clicked connection: ");
+    console.dir(clickedConnection);
+    dialog(`${swapType(connectionParentType(e))}`, "show");
 };
 
-window.openSplitterSide = () => {
+window.applyConnection = function() {
+    if (!clickedConnection && mouseEvent) {
+        document.getElementById("root").insertAdjacentHTML("beforeend", markup);
+        const firstBracket = document.querySelector(".bracket-container.first");
+        firstBracket.style.top = `${(mouseEvent.offsetY - firstBracket.clientHeight / 2)}px`;
+        firstBracket.style.left = `${(mouseEvent.offsetX - (firstBracket.clientWidth / 2))}px`;
+        dialog("bracket", "hide");
+        return;
+    }
+
+    handleConnection(clickedConnection);
+};
+
+window.openSplitterSide = function() {
     document.getElementById("menu").open();
 };
 
+window.undoConnection = function() {
+    if (!recentlyAdded.length) { return; }
+
+    const element = recentlyAdded.pop();
+    recentlyRemoved.push(element.cloneNode(true));
+    element.parentElement.addEventListener("click", connectionClick, true);
+    element.remove();
+};
+
+window.redoConnection = function() {
+    if (!recentlyRemoved.length) { return; }
+
+    const element = recentlyRemoved.pop();
+    element.parentElement.insertAdjacentElement("beforeend", element);
+    recentlyAdded.push(element.parentElement.firstChild);
+};
+
 function handleClick(e) {
+    mouseEvent = e;
     console.log(e);
-    dialog("bracket", "show");
-    /*const rootElement = document.getElementById("root");
+    
+    const rootElement = document.getElementById("root");
     if (rootElement.childElementCount === 0) {
-        document.getElementById("root").insertAdjacentHTML("beforeend", markup);
-        const firstBracket = document.querySelector(".bracket-container.first");
-        firstBracket.style.top = `${(e.offsetY - firstBracket.clientHeight / 2)}px`;
-        firstBracket.style.left = `${(e.offsetX - (firstBracket.clientWidth / 2))}px`;
-    }*/
+        dialog("bracket", "show");
+    }
 }
 
 document.getElementById("root").addEventListener("click", handleClick, true);
