@@ -60,6 +60,10 @@ function swapType(type) {
     return type === "timber" ? "bracket" : "timber";
 }
 
+function rootEmpty() {
+    return document.getElementById("root").childElementCount === 0;
+}
+
 const markup = createComponent({
     type: "bracket",
     degree: "ninety",
@@ -312,25 +316,39 @@ function handleConnection(e) {
     e.insertAdjacentHTML("beforeend", createComponent(component));
     e.removeAttribute("onclick");
 
-    recentlyAdded.push(e.firstChild);
+    const bounds = e.getBoundingClientRect();
+    recentlyAdded.push({
+        "parent": {
+            "x": (bounds.x + (bounds.width / 2)),
+            "y": (bounds.y + (bounds.height / 2))
+        },
+        "element": e.firstElementChild
+    });
 
     dialog(`${swapType(parentType)}`, "hide");
 }
 
 /* Events */
 window.connectionClick = (e) => {
-    clickedConnection = e;
-    console.log("Clicked connection: ");
-    console.dir(clickedConnection);
-    dialog(`${swapType(connectionParentType(e))}`, "show");
+    const element = e.target || e;
+    clickedConnection = element;
+    dialog(`${swapType(connectionParentType(element))}`, "show");
 };
 
 window.applyConnection = function() {
-    if (!clickedConnection && mouseEvent) {
+    if (!clickedConnection && mouseEvent && rootEmpty()) {
         document.getElementById("root").insertAdjacentHTML("beforeend", markup);
         const firstBracket = document.querySelector(".bracket-container.first");
         firstBracket.style.top = `${(mouseEvent.offsetY - firstBracket.clientHeight / 2)}px`;
         firstBracket.style.left = `${(mouseEvent.offsetX - (firstBracket.clientWidth / 2))}px`;
+        const bounds = firstBracket.getBoundingClientRect();
+        recentlyAdded.push({
+            "parent": {
+                "x": (bounds.x + (bounds.width / 2)),
+                "y": (bounds.y + (bounds.height / 2))
+            },
+            "element": firstBracket
+        });
         dialog("bracket", "hide");
         return;
     }
@@ -343,28 +361,37 @@ window.openSplitterSide = function() {
 };
 
 window.undoConnection = function() {
-    if (!recentlyAdded.length) { return; }
+    if (recentlyAdded.length === 0) { return; }
 
-    const element = recentlyAdded.pop();
-    recentlyRemoved.push(element.cloneNode(true));
-    element.parentElement.addEventListener("click", connectionClick, true);
-    element.remove();
+    const removed = recentlyAdded.pop();
+    recentlyRemoved.push({ "parent": removed.parent, "element": removed.element.cloneNode(true) });
+    removed.element.remove();
+
+    const parent = document.elementFromPoint(removed.parent.x, removed.parent.y);
+    if (!rootEmpty()) {
+        parent.addEventListener("click", connectionClick, true);
+    }
 };
 
 window.redoConnection = function() {
-    if (!recentlyRemoved.length) { return; }
+    if (recentlyRemoved.length === 0) { return; }
 
-    const element = recentlyRemoved.pop();
-    element.parentElement.insertAdjacentElement("beforeend", element);
-    recentlyAdded.push(element.parentElement.firstChild);
+    const added = recentlyRemoved.pop();
+    const parent = document.elementFromPoint(added.parent.x, added.parent.y);
+    if (!parent.className.includes("connection")) {
+        window.redoConnection();
+        return;
+    }
+    if (!rootEmpty()) {
+        parent.removeEventListener("click", connectionClick, true);
+    }
+    parent.appendChild(added.element);
+    recentlyAdded.push({ "parent": added.parent, "element": parent.firstElementChild });
 };
 
 function handleClick(e) {
     mouseEvent = e;
-    console.log(e);
-    
-    const rootElement = document.getElementById("root");
-    if (rootElement.childElementCount === 0) {
+    if (rootEmpty()) {
         dialog("bracket", "show");
     }
 }
