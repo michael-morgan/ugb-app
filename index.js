@@ -1,3 +1,4 @@
+/* START Constants */
 const width = window.outerWidth;
 const height = window.outerHeight;
 
@@ -18,11 +19,17 @@ const orientations = {
         "tl": { "horizontal": "tr", "vertical": "bl" }
     }
 };
+/* END Constants */
 
-/* Locals */
+/* START Locals */
 var clickedConnection;
+
 var recentlyAdded = [], recentlyRemoved = [];
+
 var mouseEvent;
+
+var componentCount = 0;
+/* END Locals */
 
 window.scroll(width/2, height/2);
 
@@ -36,10 +43,11 @@ function getNearbyElement(x, y, xoffset, yoffset) {
 }
 
 function createComponent({ type, degree, orientation, connectionOne, connectionTwo, first }) {
+    var componentId = `component${componentCount + 1}`;
     return `
-        <div class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation} ${first ? 'first' : ''}">
-            ${connectionOne ? '<div class="connection-one" onclick="connectionClick(this)"></div>' : ''}
-            ${connectionTwo ? '<div class="connection-two" onclick="connectionClick(this)"></div>' : ''}
+        <div id="${componentId}" class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation} ${first ? 'first' : ''}">
+            ${connectionOne ? `<div id="${componentId}-connection1" class="connection-one" onclick="connectionClick(this)"></div>` : ''}
+            ${connectionTwo ? `<div id="${componentId}-connection2" class="connection-two" onclick="connectionClick(this)"></div>` : ''}
         </div>
     `;
 }
@@ -64,6 +72,22 @@ function rootEmpty() {
     return document.getElementById("root").childElementCount === 0;
 }
 
+function addComponent(parent, component, clearHistory = true) {
+    parent.insertAdjacentHTML("beforeend", component);
+    componentCount++;
+
+    recentlyAdded.push({
+        "parent": parent.id,
+        "element": parent.firstElementChild
+    });
+
+    document.getElementById("undoButton").removeAttribute("disabled", "");
+    if (clearHistory) {
+        recentlyRemoved = [];
+        document.getElementById("redoButton").setAttribute("disabled", "");
+    }
+}
+
 const markup = createComponent({
     type: "bracket",
     degree: "ninety",
@@ -72,7 +96,6 @@ const markup = createComponent({
     connectionTwo: true,
     first: true
 });
-//document.getElementById("root").insertAdjacentHTML("beforeend", markup);
 
 window.dialog = function(type, state) {
     const dialog = document.getElementById(`${type}-dialog`);
@@ -309,46 +332,32 @@ function handleConnection(e) {
                                                     [nearbyElementParentOrientation];
         }
 
-        nearbyElement.insertAdjacentHTML("beforeend", createComponent(nearbyElementComponent));
+        addComponent(nearbyElement, createComponent(nearbyElementComponent));
         nearbyElement.removeAttribute("onclick");
     }
 
-    e.insertAdjacentHTML("beforeend", createComponent(component));
+    addComponent(e, createComponent(component));
     e.removeAttribute("onclick");
-
-    const bounds = e.getBoundingClientRect();
-    recentlyAdded.push({
-        "parent": {
-            "x": (bounds.x + (bounds.width / 2)),
-            "y": (bounds.y + (bounds.height / 2))
-        },
-        "element": e.firstElementChild
-    });
 
     dialog(`${swapType(parentType)}`, "hide");
 }
 
-/* Events */
+/* START Events */
 window.connectionClick = (e) => {
-    const element = e.target || e;
-    clickedConnection = element;
-    dialog(`${swapType(connectionParentType(element))}`, "show");
+    clickedConnection = e.target || e;
+    dialog(`${swapType(connectionParentType(clickedConnection))}`, "show");
 };
 
 window.applyConnection = function() {
     if (!clickedConnection && mouseEvent && rootEmpty()) {
-        document.getElementById("root").insertAdjacentHTML("beforeend", markup);
+        var rootElement = document.getElementById("root");
+        // Static first item till dialogs complete
+        addComponent(rootElement, markup);
+
         const firstBracket = document.querySelector(".bracket-container.first");
         firstBracket.style.top = `${(mouseEvent.offsetY - firstBracket.clientHeight / 2)}px`;
         firstBracket.style.left = `${(mouseEvent.offsetX - (firstBracket.clientWidth / 2))}px`;
-        const bounds = firstBracket.getBoundingClientRect();
-        recentlyAdded.push({
-            "parent": {
-                "x": (bounds.x + (bounds.width / 2)),
-                "y": (bounds.y + (bounds.height / 2))
-            },
-            "element": firstBracket
-        });
+
         dialog("bracket", "hide");
         return;
     }
@@ -366,10 +375,16 @@ window.undoConnection = function() {
     const removed = recentlyAdded.pop();
     recentlyRemoved.push({ "parent": removed.parent, "element": removed.element.cloneNode(true) });
     removed.element.remove();
+    componentCount--;
 
-    const parent = document.elementFromPoint(removed.parent.x, removed.parent.y);
+    const parent = document.getElementById(removed.parent);
     if (!rootEmpty()) {
         parent.addEventListener("click", connectionClick, true);
+    }
+
+    document.getElementById("redoButton").removeAttribute("disabled", "");
+    if (componentCount === 0) {
+        document.getElementById("undoButton").setAttribute("disabled", "");
     }
 };
 
@@ -377,16 +392,18 @@ window.redoConnection = function() {
     if (recentlyRemoved.length === 0) { return; }
 
     const added = recentlyRemoved.pop();
-    const parent = document.elementFromPoint(added.parent.x, added.parent.y);
-    if (!parent.className.includes("connection")) {
-        window.redoConnection();
-        return;
-    }
+    const parent = document.getElementById(added.parent);
+    parent.appendChild(added.element);
+    componentCount++;
+    recentlyAdded.push({ "parent": added.parent, "element": parent.firstElementChild });
     if (!rootEmpty()) {
         parent.removeEventListener("click", connectionClick, true);
     }
-    parent.appendChild(added.element);
-    recentlyAdded.push({ "parent": added.parent, "element": parent.firstElementChild });
+
+    document.getElementById("undoButton").removeAttribute("disabled", "");
+    if (recentlyRemoved.length === 0) {
+        document.getElementById("redoButton").setAttribute("disabled", "");
+    }
 };
 
 function handleClick(e) {
@@ -397,3 +414,4 @@ function handleClick(e) {
 }
 
 document.getElementById("root").addEventListener("click", handleClick, true);
+/* END Events */

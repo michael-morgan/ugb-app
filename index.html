@@ -48,6 +48,16 @@
                         <div class="center">
                             $400.00
                         </div>
+                        <div class="right">
+                            <ons-toolbar-button id="undoButton" onclick="undoConnection()" disabled>
+                                <ons-icon size="20px" icon="md-undo"></ons-icon>
+                                Undo
+                            </ons-toolbar-button>
+                            <ons-toolbar-button id="redoButton" onclick="redoConnection()" disabled>
+                                <ons-icon size="20px" icon="md-redo"></ons-icon>
+                                Redo
+                            </ons-toolbar-button>
+                        </div>
                     </ons-toolbar>
                     <div id="root"></div>
                 </ons-page>
