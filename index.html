@@ -71,15 +71,15 @@
 
         <!-- Dialog Templates -->
         <template id="bracket-dialog.html">
-            <ons-dialog id="bracket-dialog" cancelable>
+            <ons-dialog id="bracketDialog" cancelable>
                 <div>
                     <h2>Place Bracket</h2>
                     <ons-row vertical-align="center" class="dialog-row">
                         <ons-col width="50%">
-                            <label for="bracket-color">Color:</label>
+                            <label for="bracketColor">Color:</label>
                         </ons-col>
                         <ons-col width="50%">
-                            <ons-select id="bracket-color">
+                            <ons-select id="bracketColor">
                                 <option value="black">Black</option>
                                 <option value="copper" disabled>Copper</option>
                             </ons-select>
@@ -87,22 +87,22 @@
                     </ons-row>
                     <ons-row vertical-align="center" class="dialog-row">
                         <ons-col width="50%">
-                            <label for="bracket-degree">Degree:</label>
+                            <label for="bracketDegree">Degree:</label>
                         </ons-col>
                         <ons-col width="50%">
-                            <ons-select id="bracket-degree">
+                            <ons-select id="bracketDegree">
                                 <option value="90">90</option>
-                                <option value="180">180</option>
+                                <option value="180" disabled>180</option>
                                 <option value="45" disabled>45</option>
                             </ons-select>
                         </ons-col>
                     </ons-row>
                     <ons-row vertical-align="center" class="dialog-row">
                         <ons-col width="50%">
-                            <label for="bracket-orientation">Orientation:</label>
+                            <label for="bracketOrientation">Orientation:</label>
                         </ons-col>
                         <ons-col width="50%">
-                            <ons-select id="bracket-orientation">
+                            <ons-select id="bracketOrientation">
                                 <option value="tl">Top Left</option>
                                 <option value="tr">Top Right</option>
                                 <option value="bl">Bottom Left</option>
@@ -118,15 +118,15 @@
         </template>
 
         <template id="timber-dialog.html">
-            <ons-dialog id="timber-dialog" cancelable>
+            <ons-dialog id="timberDialog" cancelable>
                 <div>
                     <h2>Place Timber</h2>
                     <ons-row vertical-align="center" class="dialog-row">
                         <ons-col width="50%">
-                            <label for="timber-color">Color:</label>
+                            <label for="timberColor">Color:</label>
                         </ons-col>
                         <ons-col width="50%">
-                            <ons-select id="timber-color">
+                            <ons-select id="timberColor">
                                 <option value="chestnut">Chestnut</option>
                                 <option value="grey" disabled>Grey</option>
                             </ons-select>
@@ -134,10 +134,10 @@
                     </ons-row>
                     <ons-row vertical-align="center" class="dialog-row">
                         <ons-col width="50%">
-                            <label for="">Length:</label>
+                            <label for="timberLength">Length:</label>
                         </ons-col>
                         <ons-col width="50%">
-                            <ons-range id="timber-length" min="1" max="40" step="1" value="10" disabled></ons-range>
+                            <ons-range id="timberLength" min="1" max="40" step="1" value="10" disabled></ons-range>
                         </ons-col>
                     </ons-row>
                     <div class="button-container">

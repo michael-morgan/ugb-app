@@ -122,7 +122,7 @@ const firstComponent = {
 };
 
 window.dialog = function(type, state) {
-    const dialog = document.getElementById(`${type}-dialog`);
+    const dialog = document.getElementById(`${type}Dialog`);
     if (state === "show") {
         try {
             dialog.show();
