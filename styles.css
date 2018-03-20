@@ -162,6 +162,19 @@
 }
 
 /* Dialog Styling */
-#bracket-dialog>div, #timber-dialog>div {
+#bracket-dialog h2, #timber-dialog h2 {
     text-align: center;
+}
+
+#bracket-dialog .button-container, #timber-dialog .button-container {
+    text-align: center;
+    margin: 10px 0;
+}
+
+.dialog-row {
+    padding: 10px 25px;
+}
+
+.dialog-row label {
+    margin-right: 15px;
 }
