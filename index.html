@@ -40,22 +40,26 @@
             <ons-splitter-content>
                 <ons-page>
                     <ons-toolbar>
-                        <div class="left">
+                        <div class="left" style="width:40%;">
                             <ons-toolbar-button onclick="openSplitterSide()">
                                 <ons-icon icon="md-menu"></ons-icon>
                             </ons-toolbar-button>
+                            <ons-toolbar-button id="saveButton" onclick="">
+                                <ons-icon size="20px" icon="md-save"></ons-icon>
+                                <span>Save</span>
+                            </ons-toolbar-button>
                         </div>
-                        <div class="center">
-                            $400.00
+                        <div class="center" style="width:20%;">
+                            $0.00
                         </div>
-                        <div class="right">
+                        <div class="right" style="width:40%;">
                             <ons-toolbar-button id="undoButton" onclick="undoConnection()" disabled>
                                 <ons-icon size="20px" icon="md-undo"></ons-icon>
-                                Undo
+                                <span>Undo</span>
                             </ons-toolbar-button>
                             <ons-toolbar-button id="redoButton" onclick="redoConnection()" disabled>
                                 <ons-icon size="20px" icon="md-redo"></ons-icon>
-                                Redo
+                                <span>Redo</span>
                             </ons-toolbar-button>
                         </div>
                     </ons-toolbar>

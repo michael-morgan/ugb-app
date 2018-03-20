@@ -178,3 +178,9 @@
 .dialog-row label {
     margin-right: 15px;
 }
+
+@media only screen and (min-width: 320px) and (max-width: 480px) {
+    #saveButton span, #redoButton span, #undoButton span {
+        display: none;
+    }
+}
