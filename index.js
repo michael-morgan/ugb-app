@@ -26,9 +26,9 @@ var clickedConnection;
 
 var recentlyAdded = [], recentlyRemoved = [];
 
-var mouseEvent;
-
 var componentCount = 0;
+
+var firstBracketLocation = { x: 0, y: 0 };
 /* END Locals */
 
 window.scroll(width/2, height/2);
@@ -73,12 +73,17 @@ function rootEmpty() {
 }
 
 function addComponent(parent, component, clearHistory = true) {
-    parent.insertAdjacentHTML("beforeend", component);
+    parent.insertAdjacentHTML("beforeend", createComponent(component));
     componentCount++;
+
+    if (componentCount > 1) {
+        parent.removeAttribute("onclick");
+        parent.removeEventListener("click", connectionClick, true);
+    }
 
     recentlyAdded.push({
         "parent": parent.id,
-        "element": parent.firstElementChild
+        "element": Object.assign({}, component)
     });
 
     document.getElementById("undoButton").removeAttribute("disabled", "");
@@ -88,14 +93,20 @@ function addComponent(parent, component, clearHistory = true) {
     }
 }
 
-const markup = createComponent({
+function setFirstBracketLocation() {
+    const firstBracket = document.querySelector(".bracket-container.first");
+    firstBracket.style.left = `${(firstBracketLocation.x - (firstBracket.clientWidth / 2))}px`;
+    firstBracket.style.top = `${(firstBracketLocation.y - firstBracket.clientHeight / 2)}px`;
+}
+
+const firstComponent = {
     type: "bracket",
     degree: "ninety",
     orientation: "br",
     connectionOne: true,
     connectionTwo: true,
     first: true
-});
+};
 
 window.dialog = function(type, state) {
     const dialog = document.getElementById(`${type}-dialog`);
@@ -332,12 +343,10 @@ function handleConnection(e) {
                                                     [nearbyElementParentOrientation];
         }
 
-        addComponent(nearbyElement, createComponent(nearbyElementComponent));
-        nearbyElement.removeAttribute("onclick");
+        addComponent(nearbyElement, nearbyElementComponent);
     }
 
-    addComponent(e, createComponent(component));
-    e.removeAttribute("onclick");
+    addComponent(e, component);
 
     dialog(`${swapType(parentType)}`, "hide");
 }
@@ -349,14 +358,12 @@ window.connectionClick = (e) => {
 };
 
 window.applyConnection = function() {
-    if (!clickedConnection && mouseEvent && rootEmpty()) {
+    if (rootEmpty()) {
         var rootElement = document.getElementById("root");
         // Static first item till dialogs complete
-        addComponent(rootElement, markup);
+        addComponent(rootElement, firstComponent);
 
-        const firstBracket = document.querySelector(".bracket-container.first");
-        firstBracket.style.top = `${(mouseEvent.offsetY - firstBracket.clientHeight / 2)}px`;
-        firstBracket.style.left = `${(mouseEvent.offsetX - (firstBracket.clientWidth / 2))}px`;
+        setFirstBracketLocation();
 
         dialog("bracket", "hide");
         return;
@@ -373,11 +380,11 @@ window.undoConnection = function() {
     if (recentlyAdded.length === 0) { return; }
 
     const removed = recentlyAdded.pop();
-    recentlyRemoved.push({ "parent": removed.parent, "element": removed.element.cloneNode(true) });
-    removed.element.remove();
+    const parent = document.getElementById(removed.parent);
+    recentlyRemoved.push({ "parent": removed.parent, "element": Object.assign({}, removed.element) });
+    parent.children[0].remove();
     componentCount--;
 
-    const parent = document.getElementById(removed.parent);
     if (!rootEmpty()) {
         parent.addEventListener("click", connectionClick, true);
     }
@@ -393,11 +400,10 @@ window.redoConnection = function() {
 
     const added = recentlyRemoved.pop();
     const parent = document.getElementById(added.parent);
-    parent.appendChild(added.element);
-    componentCount++;
-    recentlyAdded.push({ "parent": added.parent, "element": parent.firstElementChild });
-    if (!rootEmpty()) {
-        parent.removeEventListener("click", connectionClick, true);
+    addComponent(parent, added.element, false);
+
+    if (added.parent === "root") {
+        setFirstBracketLocation();
     }
 
     document.getElementById("undoButton").removeAttribute("disabled", "");
@@ -407,8 +413,9 @@ window.redoConnection = function() {
 };
 
 function handleClick(e) {
-    mouseEvent = e;
     if (rootEmpty()) {
+        firstBracketLocation.x = e.offsetX;
+        firstBracketLocation.y = e.offsetY;
         dialog("bracket", "show");
     }
 }
