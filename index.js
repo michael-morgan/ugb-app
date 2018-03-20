@@ -91,12 +91,25 @@ function addComponent(parent, component, clearHistory = true) {
         recentlyRemoved = [];
         document.getElementById("redoButton").setAttribute("disabled", "");
     }
+
+    appendPrice(component.type);
 }
 
 function setFirstBracketLocation() {
     const firstBracket = document.querySelector(".bracket-container.first");
     firstBracket.style.left = `${(firstBracketLocation.x - (firstBracket.clientWidth / 2))}px`;
     firstBracket.style.top = `${(firstBracketLocation.y - firstBracket.clientHeight / 2)}px`;
+}
+
+function appendPrice(type, modifier = 1) {
+    const priceElement = document.getElementById("price");
+    var price = parseFloat(priceElement.innerText || priceElement.textContent);
+    if (type === "timber") {
+        price += (modifier * 25);
+    } else if (type === "bracket") {
+        price += (modifier * 10);
+    }
+    priceElement.innerHTML = price.toFixed(2);
 }
 
 const firstComponent = {
@@ -393,6 +406,8 @@ window.undoConnection = function() {
     if (componentCount === 0) {
         document.getElementById("undoButton").setAttribute("disabled", "");
     }
+
+    appendPrice(removed.element.type, -1);
 };
 
 window.redoConnection = function() {
