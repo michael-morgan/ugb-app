@@ -37,7 +37,11 @@ function getNearbyElement(x, y, xoffset, yoffset) {
     const element = document.elementFromPoint(x + xoffset, y + yoffset);
     console.log("Nearby element: ");
     console.dir(element);
-    return (element.className.includes("connection") ? element : null);
+    return (
+        (element.className.includes("connection")
+        || element.className.includes("bracket")
+        || element.className.includes("timber")) ? element : null
+    );
 }
 
 function createComponent({ type, degree, orientation, connectionOne, connectionTwo, first }) {
