@@ -63,6 +63,43 @@
                             </ons-toolbar-button>
                         </div>
                     </ons-toolbar>
+                    <ons-toolbar id="subToolbar">
+                        <div class="left" style="width:100%;">
+                            <ons-toolbar-button onclick="swapSubToolbar()">
+                                <ons-icon size="20px" icon="md-redo"></ons-icon>
+                                <span id="componentType">B</span>
+                            </ons-toolbar-button>
+                            <span class="sub-toolbar-spacer">|</span>
+                            <div id="bracketTools">
+                                <ons-select id="bracketComponentColor" class="sub-toolbar-drop">
+                                    <option value="black">Black</option>
+                                    <option value="copper" disabled>Copper</option>
+                                </ons-select>
+                                <span class="sub-toolbar-spacer">|</span>
+                                <ons-select id="bracketComponentDegree" class="sub-toolbar-drop">
+                                    <option value="ninety">90</option>
+                                    <option value="oneeighty" disabled>180</option>
+                                    <option value="fourtyfive" disabled>45</option>
+                                </ons-select>
+                                <span class="sub-toolbar-spacer">|</span>
+                                <ons-select id="bracketComponentOrientation" class="sub-toolbar-drop">
+                                    <option value="tl">&ulcorn;</option>
+                                    <option value="tr">&urcorn;</option>
+                                    <option value="bl">&dlcorn;</option>
+                                    <option value="br">&drcorn;</option>
+                                </ons-select>
+                            </div>
+                            <div id="timberTools">
+                                <ons-select id="timberComponentColor" class="sub-toolbar-drop">
+                                    <option value="chestnut">Chestnut</option>
+                                    <option value="grey" disabled>Grey</option>
+                                </ons-select>
+                                <span class="sub-toolbar-spacer">|</span>
+                                <ons-range id="timberLength" min="1" max="40" step="1" value="10" disabled></ons-range>
+                                <span id="timberLengthValue">40</span>
+                            </div>
+                        </div>
+                    </ons-toolbar>
                     <div id="root"></div>
                 </ons-page>
             </ons-splitter-content>

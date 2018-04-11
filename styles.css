@@ -161,6 +161,27 @@
     text-align: center;
 }
 
+/* Toolbar Styling */
+#subToolbar {
+    top: 44px;
+}
+#bracketTools, #timberTools {
+    display: inline-block;
+}
+#timberTools {
+    display: none;
+}
+.sub-toolbar-drop select {
+    margin: 6px 0 0 0;
+}
+.sub-toolbar-spacer {
+    margin: 0 10px;
+}
+#timberLengthValue {
+    margin-left: 5px;
+}
+/* END Toolbar Styling */
+
 /* Dialog Styling */
 #bracketDialog h2, #timberDialog h2 {
     text-align: center;

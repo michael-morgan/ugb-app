@@ -518,6 +518,22 @@ window.redoConnection = function() {
     }
 };
 
+window.swapSubToolbar = function() {
+    const componentType = document.getElementById("componentType");
+    const bracketTools = document.getElementById("bracketTools");
+    const timberTools = document.getElementById("timberTools");
+
+    if (componentType.textContent === "B") {
+        componentType.textContent = "T";
+        bracketTools.style.display = "none";
+        timberTools.style.display = "inline-block";
+    } else {
+        componentType.textContent = "B";
+        timberTools.style.display = "none";
+        bracketTools.style.display = "inline-block";
+    }
+};
+
 function handleClick(e) {
     if (rootEmpty()) {
         firstBracketLocation.x = e.offsetX;
