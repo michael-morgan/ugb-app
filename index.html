@@ -76,9 +76,9 @@
                                     <option value="copper" disabled>Copper</option>
                                 </ons-select>
                                 <span class="sub-toolbar-spacer">|</span>
-                                <ons-select id="bracketComponentDegree" class="sub-toolbar-drop">
+                                <ons-select id="bracketComponentDegree" class="sub-toolbar-drop" onchange="degreeChange(event)">
                                     <option value="ninety">90</option>
-                                    <option value="oneeighty" disabled>180</option>
+                                    <option value="oneeighty">180</option>
                                     <option value="fourtyfive" disabled>45</option>
                                 </ons-select>
                                 <span class="sub-toolbar-spacer">|</span>
@@ -87,6 +87,16 @@
                                     <option value="tr">&urcorn;</option>
                                     <option value="bl">&dlcorn;</option>
                                     <option value="br">&drcorn;</option>
+                                </ons-select>
+                                <ons-select id="ninetyOrientations" class="hidden-orientations">
+                                    <option value="tl">&ulcorn;</option>
+                                    <option value="tr">&urcorn;</option>
+                                    <option value="bl">&dlcorn;</option>
+                                    <option value="br">&drcorn;</option>
+                                </ons-select>
+                                <ons-select id="oneeightyOrientations" class="hidden-orientations">
+                                    <option value="horizontal">&mdash;</option>
+                                    <option value="vertical">|</option>
                                 </ons-select>
                             </div>
                             <div id="timberTools">

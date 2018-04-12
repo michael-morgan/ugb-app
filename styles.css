@@ -96,6 +96,44 @@
     background-color: lightgreen;
 }
 
+/* Bracket 180 Degrees Horizontal */
+.bracket-oneeighty-horizontal>.connection-one {
+    position: absolute;
+    top: 0;
+    left: -150px;
+    width: 150px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+.bracket-oneeighty-horizontal>.connection-two {
+    position: absolute;
+    top: 0;
+    left: 75px;
+    width: 150px;
+    height: 75px;
+    background-color: lightgreen;
+}
+
+/* Bracket 180 Degrees Vertical */
+.bracket-oneeighty-vertical>.connection-one {
+    position: absolute;
+    top: -150px;
+    left: 0;
+    width: 75px;
+    height: 150px;
+    background-color: lightgreen;
+}
+
+.bracket-oneeighty-vertical>.connection-two {
+    position: absolute;
+    top: 75px;
+    left: 0;
+    width: 75px;
+    height: 150px;
+    background-color: lightgreen;
+}
+
 .timber-container {
     position: relative;
     top: 0;
@@ -179,6 +217,9 @@
 }
 #timberLengthValue {
     margin-left: 5px;
+}
+.hidden-orientations {
+    display: none;
 }
 /* END Toolbar Styling */
 

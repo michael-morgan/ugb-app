@@ -151,7 +151,7 @@ function handleConnection(connection, component = {}) {
     console.log("Connection Bounding: ", elementProperties);
     let nearbyElement = null;
 
-    document.getElementById(`${swapType(parentType)}Dialog`).style.display = "none";
+    //document.getElementById(`${swapType(parentType)}Dialog`).style.display = "none";
 
     if (component.type === "timber") {
         component.orientation = orientations[component.type][parentOrientation][connectionType];
@@ -223,166 +223,170 @@ function handleConnection(connection, component = {}) {
             break;
         }
     } else if (component.type === "bracket") {
-        const previousBracketOrientation = connection.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[1];
-        console.log("Previous bracket orientation: ", previousBracketOrientation);
-        const previousBracketDegree = connection.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[0];
-        console.log("Previous bracket degree: ", previousBracketDegree);
+        if (component.degree !== "oneeighty") {
+            const previousBracketOrientation = connection.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[1];
+            console.log("Previous bracket orientation: ", previousBracketOrientation);
+            const previousBracketDegree = connection.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[0];
+            console.log("Previous bracket degree: ", previousBracketDegree);
 
-        switch(previousBracketOrientation) {
-            case "br":
-                if (parentOrientation === "horizontal") {
-                    if (component.orientation !== "bl" && component.orientation !== "tl") {
-                        component.orientation = "bl";
-                    }
+            switch(previousBracketOrientation) {
+                case "br":
+                    if (parentOrientation === "horizontal") {
+                        if (component.orientation !== "bl" && component.orientation !== "tl") {
+                            component.orientation = "bl";
+                        }
 
-                    if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, -yPadding
-                        );
-                    } else if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, yPadding
-                        );
-                    }
+                        if (component.orientation === "bl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, -yPadding
+                            );
+                        } else if (component.orientation === "tl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, yPadding
+                            );
+                        }
 
-                    component.connectionOne = !nearbyElement;
-                } else if (parentOrientation === "vertical") {
-                    if (component.orientation !== "tr" && component.orientation !== "tl") {
-                        component.orientation = "tr";
-                    }
-
-                    if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            -xPadding, yPadding
-                        );
                         component.connectionOne = !nearbyElement;
-                    } else if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            (elementProperties.width + xPadding), yPadding
-                        );
+                    } else if (parentOrientation === "vertical") {
+                        if (component.orientation !== "tr" && component.orientation !== "tl") {
+                            component.orientation = "tr";
+                        }
+
+                        if (component.orientation === "tr") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                -xPadding, yPadding
+                            );
+                            component.connectionOne = !nearbyElement;
+                        } else if (component.orientation === "tl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                (elementProperties.width + xPadding), yPadding
+                            );
+                            component.connectionTwo = !nearbyElement;
+                        }
+                    }
+                break;
+                case "bl":
+                    if (parentOrientation === "horizontal") {
+                        if (component.orientation !== "br" && component.orientation !== "tr") {
+                            component.orientation = "br";
+                        }
+
+                        if (component.orientation === "br") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, -yPadding
+                            );
+                        } else if (component.orientation === "tr") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, yPadding
+                            );
+                        }
+
                         component.connectionTwo = !nearbyElement;
-                    }
-                }
-            break;
-            case "bl":
-                if (parentOrientation === "horizontal") {
-                    if (component.orientation !== "br" && component.orientation !== "tr") {
-                        component.orientation = "br";
-                    }
+                    } else if (parentOrientation === "vertical") {
+                        if (component.orientation !== "tl" && component.orientation !== "tr") {
+                            component.orientation = "tl";
+                        }
 
-                    if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, -yPadding
-                        );
-                    } else if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, yPadding
-                        );
+                        if (component.orientation === "tl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                (elementProperties.width + xPadding), yPadding
+                            );
+                            component.connectionTwo = !nearbyElement;
+                        } else if (component.orientation === "tr") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                -xPadding, yPadding
+                            );
+                            component.connectionOne = !nearbyElement;
+                        }
                     }
+                break;
+                case "tr":
+                    if (parentOrientation === "horizontal") {
+                        if (component.orientation !== "tl" && component.orientation !== "bl") {
+                            component.orientation = "tl";
+                        }
 
-                    component.connectionTwo = !nearbyElement;
-                } else if (parentOrientation === "vertical") {
-                    if (component.orientation !== "tl" && component.orientation !== "tr") {
-                        component.orientation = "tl";
-                    }
-
-                    if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            (elementProperties.width + xPadding), yPadding
-                        );
-                        component.connectionTwo = !nearbyElement;
-                    } else if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            -xPadding, yPadding
-                        );
+                        if (component.orientation === "tl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, (elementProperties.height + yPadding)
+                            );
+                        } else if (component.orientation === "bl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, -yPadding
+                            );
+                        }
                         component.connectionOne = !nearbyElement;
-                    }
-                }
-            break;
-            case "tr":
-                if (parentOrientation === "horizontal") {
-                    if (component.orientation !== "tl" && component.orientation !== "bl") {
-                        component.orientation = "tl";
-                    }
+                    } else if (parentOrientation === "vertical") {
+                        if (component.orientation !== "br" && component.orientation !== "bl") {
+                            component.orientation = "br";
+                        }
 
-                    if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, (elementProperties.height + yPadding)
-                        );
-                    } else if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, -yPadding
-                        );
+                        if (component.orientation === "br") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                -xPadding, yPadding
+                            );
+                            component.connectionOne = !nearbyElement;
+                        } else if (component.orientation === "bl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                (elementProperties.width + xPadding), yPadding
+                            );
+                            component.connectionTwo = !nearbyElement;
+                        }
                     }
-                    component.connectionOne = !nearbyElement;
-                } else if (parentOrientation === "vertical") {
-                    if (component.orientation !== "br" && component.orientation !== "bl") {
-                        component.orientation = "br";
-                    }
+                break;
+                case "tl":
+                    if (parentOrientation === "horizontal") {
+                        if (component.orientation !== "tr" && component.orientation !== "br") {
+                            component.orientation = "tr";
+                        }
 
-                    if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            -xPadding, yPadding
-                        );
-                        component.connectionOne = !nearbyElement;
-                    } else if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            (elementProperties.width + xPadding), yPadding
-                        );
+                        if (component.orientation === "tr") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, (elementProperties.height + yPadding)
+                            );
+                        } else if (component.orientation === "br") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                xPadding, -yPadding
+                            );
+                        }
                         component.connectionTwo = !nearbyElement;
-                    }
-                }
-            break;
-            case "tl":
-                if (parentOrientation === "horizontal") {
-                    if (component.orientation !== "tr" && component.orientation !== "br") {
-                        component.orientation = "tr";
-                    }
+                    } else if (parentOrientation === "vertical") {
+                        if (component.orientation !== "bl" && component.orientation !== "br") {
+                            component.orientation = "bl";
+                        }
 
-                    if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, (elementProperties.height + yPadding)
-                        );
-                    } else if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            xPadding, -yPadding
-                        );
+                        if (component.orientation === "bl") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                (elementProperties.width + xPadding), yPadding
+                            );
+                            component.connectionTwo = !nearbyElement;
+                        } else if (component.orientation === "br") {
+                            nearbyElement = getNearbyElement(
+                                elementProperties.x, elementProperties.y,
+                                -xPadding, yPadding
+                            );
+                            component.connectionOne = !nearbyElement;
+                        }
                     }
-                    component.connectionTwo = !nearbyElement;
-                } else if (parentOrientation === "vertical") {
-                    if (component.orientation !== "bl" && component.orientation !== "br") {
-                        component.orientation = "bl";
-                    }
-
-                    if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            (elementProperties.width + xPadding), yPadding
-                        );
-                        component.connectionTwo = !nearbyElement;
-                    } else if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
-                            elementProperties.x, elementProperties.y,
-                            -xPadding, yPadding
-                        );
-                        component.connectionOne = !nearbyElement;
-                    }
-                }
-            break;
+                break;
+            }
+        } else {
+            //TODO: Add oneeighty degree logic.
         }
     }
 
@@ -435,27 +439,28 @@ function handleConnection(connection, component = {}) {
 
     addComponent(connection, component);
 
-    dialog(`${swapType(parentType)}`, "hide");
+    //dialog(`${swapType(parentType)}`, "hide");
 }
 
 /* START Events */
 window.connectionClick = (e) => {
     clickedConnection = e.target || e;
-    dialog(`${swapType(connectionParentType(clickedConnection))}`, "show");
+    //dialog(`${swapType(connectionParentType(clickedConnection))}`, "show");
+    applyConnection();
 };
 
 window.applyConnection = function() {
-    let dialogElement = null;
+    //let dialogElement = null;
 
     if (rootEmpty()) {
         var rootElement = document.getElementById("root");
-        dialogElement = document.getElementById("bracketDialog");
-        console.dir(dialogElement);
+        //dialogElement = document.getElementById("bracketDialog");
+        //console.dir(dialogElement);
 
         addComponent(rootElement, {
             type: "bracket",
-            degree: dialogElement.querySelector("#bracketDegree").value,
-            orientation: dialogElement.querySelector("#bracketOrientation").value,
+            degree: document.getElementById("bracketComponentDegree").value,
+            orientation: document.getElementById("bracketComponentOrientation").value,
             connectionOne: true,
             connectionTwo: true,
             first: true
@@ -463,16 +468,16 @@ window.applyConnection = function() {
 
         setFirstBracketLocation();
 
-        dialog("bracket", "hide");
+        //dialog("bracket", "hide");
         return;
     }
 
     const type = swapType(connectionParentType(clickedConnection));
-    dialogElement = document.getElementById(`${type}Dialog`);
+    //dialogElement = document.getElementById(`${type}Dialog`);
     handleConnection(clickedConnection, {
         type,
-        degree: (type === "bracket" ? dialogElement.querySelector("#bracketDegree").value : null),
-        orientation: (type === "bracket" ? dialogElement.querySelector("#bracketOrientation").value : null)
+        degree: (type === "bracket" ? document.getElementById("bracketComponentDegree").value : null),
+        orientation: (type === "bracket" ? document.getElementById("bracketComponentOrientation").value : null)
     });
 };
 
@@ -534,11 +539,26 @@ window.swapSubToolbar = function() {
     }
 };
 
+window.degreeChange = function(e) {
+    const degree = e.target.value;
+    let orientationContent;
+    switch (degree) {
+        case "ninety":
+        orientationContent = document.getElementById("ninetyOrientations").innerHTML;
+        break;
+        case "oneeighty":
+        orientationContent = document.getElementById("oneeightyOrientations").innerHTML;
+        break;
+    }
+    document.getElementById("bracketComponentOrientation").innerHTML = orientationContent;
+};
+
 function handleClick(e) {
     if (rootEmpty()) {
         firstBracketLocation.x = e.offsetX;
         firstBracketLocation.y = e.offsetY;
-        dialog("bracket", "show");
+        //dialog("bracket", "show");
+        applyConnection();
     }
 }
 
