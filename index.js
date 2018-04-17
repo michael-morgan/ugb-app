@@ -288,7 +288,7 @@ function handleConnection(connection, component = {}) {
                     } else if (component.orientation === "tl") {
                         nearbyElement = getNearbyElement(
                             elementProperties.x, elementProperties.y,
-                            xPadding, yPadding
+                            xPadding, (elementProperties.height + yPadding)
                         );
                     }
 
@@ -345,7 +345,7 @@ function handleConnection(connection, component = {}) {
                     } else if (component.orientation === "tr") {
                         nearbyElement = getNearbyElement(
                             elementProperties.x, elementProperties.y,
-                            xPadding, yPadding
+                            xPadding, (elementProperties.height + yPadding)
                         );
                     }
 
@@ -685,6 +685,37 @@ window.degreeChange = function(e) {
         break;
     }
     document.getElementById("bracketComponentOrientation").innerHTML = orientationContent;
+};
+
+window.colorChange = function(e) {
+    const parentId = e.target.parentElement.id;
+    let color;
+    let selector;
+    if (parentId.includes("bracket")) {
+        selector = ".bracket-container";
+        switch (e.target.value) {
+            case "black":
+            color = "black";
+            break;
+            case "copper":
+            color = "firebrick";
+            break;
+        }
+    } else if (parentId.includes("timber")) {
+        selector = ".timber-container";
+        switch (e.target.value) {
+            case "chestnut":
+            color = "saddlebrown";
+            break;
+            case "grey":
+            color = "grey";
+            break;
+        }
+    }
+    const elements = document.querySelectorAll(selector);
+    for (var i = 0; i < elements.length; i++) {
+        elements[i].style.backgroundColor = color;
+    }
 };
 
 function handleClick(e) {

@@ -138,7 +138,7 @@
     position: relative;
     top: 0;
     left: 0;
-    background-color: brown;
+    background-color: saddlebrown;
 }
 
 .timber-horizontal {
@@ -214,6 +214,7 @@
 }
 .sub-toolbar-spacer {
     margin: 0 10px;
+    color: lightgray;
 }
 #timberLengthValue {
     margin-left: 5px;

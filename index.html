@@ -71,9 +71,9 @@
                             </ons-toolbar-button>
                             <span class="sub-toolbar-spacer">|</span>
                             <div id="bracketTools">
-                                <ons-select id="bracketComponentColor" class="sub-toolbar-drop">
+                                <ons-select id="bracketComponentColor" class="sub-toolbar-drop" onchange="colorChange(event)">
                                     <option value="black">Black</option>
-                                    <option value="copper" disabled>Copper</option>
+                                    <option value="copper">Copper</option>
                                 </ons-select>
                                 <span class="sub-toolbar-spacer">|</span>
                                 <ons-select id="bracketComponentDegree" class="sub-toolbar-drop" onchange="degreeChange(event)">
@@ -100,9 +100,9 @@
                                 </ons-select>
                             </div>
                             <div id="timberTools">
-                                <ons-select id="timberComponentColor" class="sub-toolbar-drop">
+                                <ons-select id="timberComponentColor" class="sub-toolbar-drop" onchange="colorChange(event)">
                                     <option value="chestnut">Chestnut</option>
-                                    <option value="grey" disabled>Grey</option>
+                                    <option value="grey">Grey</option>
                                 </ons-select>
                                 <span class="sub-toolbar-spacer">|</span>
                                 <ons-range id="timberLength" min="1" max="40" step="1" value="10" disabled></ons-range>
