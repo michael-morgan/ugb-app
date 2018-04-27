@@ -684,6 +684,7 @@ window.connectionClick = (e) => {
 };
 
 window.applyConnection = function() {
+
     //let dialogElement = null;
 
     if (rootEmpty()) {
@@ -707,6 +708,14 @@ window.applyConnection = function() {
     }
 
     const connectionType = clickedConnection.dataset.connection;
+
+    if (connectionType === "three"
+        && document.querySelectorAll(
+            "[data-type='connection'][data-empty='true']"
+        ).length) {
+        return;
+    }
+
     const type = (connectionType === "three") ? "bracket" : swapType(clickedConnection.parentElement.dataset.type);
     //dialogElement = document.getElementById(`${type}Dialog`);
     handleConnection(clickedConnection, {
