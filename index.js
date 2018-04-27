@@ -37,35 +37,61 @@ window.scroll(width/2, height/2);
 
 function getNearbyElement(x, y, xoffset, yoffset) {
     const element = document.elementFromPoint(x + xoffset, y + yoffset);
-    console.log("Nearby element: ");
-    console.dir(element);
+    console.log("Nearby element: ", element);
     return (
-        (element.className.includes("connection")
-        || element.className.includes("bracket")
-        || element.className.includes("timber")) ? element : null
+        (
+            element.className.includes("connection")
+            || element.className.includes("bracket")
+            || element.className.includes("timber")
+        ) ? element : null
     );
 }
 
 function createComponent({ type, degree, orientation, connectionOne, connectionTwo, first }) {
     var componentId = `component${componentCount + 1}`;
     return `
-        <div id="${componentId}" class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation} ${first ? 'first' : ''}">
-            ${connectionOne ? `<div id="${componentId}-connection1" class="connection-one" onclick="connectionClick(this)"></div>` : ''}
-            ${connectionTwo ? `<div id="${componentId}-connection2" class="connection-two" onclick="connectionClick(this)"></div>` : ''}
+        <div
+            id="${componentId}"
+            class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation} ${first ? 'first' : ''}"
+            data-type="${type}"
+            data-degree="${degree}"
+            data-orientation="${orientation}"
+            data-first="${first}"
+        >
+            ${connectionOne
+                ?  `<div
+                        id="${componentId}-connection1"
+                        class="connection-one"
+                        onclick="connectionClick(this)"
+                        data-type="connection"
+                        data-connection="one"
+                        data-empty="true"
+                    ></div>`
+                : ""
+            }
+            ${connectionTwo
+                ?  `<div
+                        id="${componentId}-connection2"
+                        class="connection-two"
+                        onclick="connectionClick(this)"
+                        data-type="connection"
+                        data-connection="two"
+                        data-empty="true"
+                    ></div>`
+                : ""
+            }
+            ${type === "bracket"
+                ?  `<div
+                        id="${componentId}-connection3"
+                        class="connection-three"
+                        onclick="connectionClick(this)"
+                        data-type="connection"
+                        data-connection="three"
+                    ></div>`
+                : ""
+            }
         </div>
     `;
-}
-
-function connectionParentType(e) {
-    return e.parentElement.classList.item(0).split("-")[0];
-}
-
-function connectionParentProps(e) {
-    return e.parentElement.classList.item(1).split("-").slice(1);
-}
-
-function getConnectionType(e) {
-    return e.className.split("-")[1];
 }
 
 function swapType(type) {
@@ -77,6 +103,9 @@ function rootEmpty() {
 }
 
 function addComponent(parent, component, clearHistory = true) {
+    if (parent.dataset.connection !== "three") {
+        parent.dataset.empty = "false";
+    }
     parent.insertAdjacentHTML("beforeend", createComponent(component));
     componentCount++;
 
@@ -100,7 +129,7 @@ function addComponent(parent, component, clearHistory = true) {
 }
 
 function setFirstBracketLocation() {
-    const firstBracket = document.querySelector(".bracket-container.first");
+    const firstBracket = document.querySelector("[data-first='true']");
     firstBracket.style.left = `${(firstBracketLocation.x - (firstBracket.clientWidth / 2))}px`;
     firstBracket.style.top = `${(firstBracketLocation.y - firstBracket.clientHeight / 2)}px`;
 }
@@ -137,21 +166,21 @@ window.dialog = function(type, state) {
 function handleConnection(connection, component = {}) {
     console.dir(connection);
 
-    const parentType = connectionParentType(connection);
+    const parentType = connection.parentElement.dataset.type;
     console.log("Parent type: ", parentType);
 
-    const parentProps = connectionParentProps(connection);
-    const parentOrientation = parentProps[+(parentProps.length > 1)];
+    const parentOrientation = connection.parentElement.dataset.orientation;
     console.log("Parent orientation: ", parentOrientation);
-    const parentDegree = parentProps[0];
+    const parentDegree = connection.parentElement.dataset.degree;
     console.log("Parent degree: ", parentDegree);
 
-    const connectionType = getConnectionType(connection);
+    const connectionType = connection.dataset.connection;
     console.log("Connection: ", connectionType);
 
     const elementProperties = connection.getBoundingClientRect();
     console.log("Connection Bounding: ", elementProperties);
     let nearbyElement = null;
+    let otherNearbyElement = null;
 
     //document.getElementById(`${swapType(parentType)}Dialog`).style.display = "none";
 
@@ -259,9 +288,13 @@ function handleConnection(connection, component = {}) {
             break;
         }
     } else if (component.type === "bracket") {
-        const previousBracketOrientation = connection.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[1];
+        const previousBracketOrientation = (connectionType === "three")
+            ? connection.parentElement.dataset.orientation
+            : connection.parentElement.parentElement.parentElement.dataset.orientation;
         console.log("Previous bracket orientation: ", previousBracketOrientation);
-        const previousBracketDegree = connection.parentElement.parentElement.parentElement.classList.item(1).split("-").slice(1)[0];
+        const previousBracketDegree = (connectionType === "three")
+            ? connection.parentElement.dataset.degree
+            : connection.parentElement.parentElement.parentElement.dataset.degree;
         console.log("Previous bracket degree: ", previousBracketDegree);
 
         switch(previousBracketOrientation) {
@@ -320,6 +353,21 @@ function handleConnection(connection, component = {}) {
                         );
                         component.connectionTwo = !nearbyElement;
                     }
+                } else if (parentOrientation === "br") {
+                    if (component.orientation !== "br") {
+                        component.orientation = "br";
+                    }
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        -xPadding, yPadding
+                    );
+                    component.connectionOne = !nearbyElement;
+                    otherNearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, -yPadding
+                    );
+                    component.connectionTwo = !otherNearbyElement;
                 }
             break;
             case "bl":
@@ -377,6 +425,21 @@ function handleConnection(connection, component = {}) {
                         );
                         component.connectionOne = !nearbyElement;
                     }
+                } else if (parentOrientation === "bl") {
+                    if (component.orientation !== "bl") {
+                        component.orientation = "bl";
+                    }
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, -yPadding
+                    );
+                    component.connectionOne = !nearbyElement;
+                    otherNearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        (elementProperties.width + xPadding), yPadding
+                    );
+                    component.connectionTwo = !otherNearbyElement;
                 }
             break;
             case "tr":
@@ -433,6 +496,21 @@ function handleConnection(connection, component = {}) {
                         );
                         component.connectionTwo = !nearbyElement;
                     }
+                } else if (parentOrientation === "tr") {
+                    if (component.orientation !== "tr") {
+                        component.orientation = "tr";
+                    }
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        -xPadding, yPadding
+                    );
+                    component.connectionOne = !nearbyElement;
+                    otherNearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, (elementProperties.height + yPadding)
+                    );
+                    component.connectionTwo = !otherNearbyElement;
                 }
             break;
             case "tl":
@@ -489,6 +567,21 @@ function handleConnection(connection, component = {}) {
                         );
                         component.connectionOne = !nearbyElement;
                     }
+                } else if (parentOrientation === "tl") {
+                    if (component.orientation !== "tl") {
+                        component.orientation = "tl";
+                    }
+
+                    nearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        xPadding, (elementProperties.height + yPadding)
+                    );
+                    component.connectionOne = !nearbyElement;
+                    otherNearbyElement = getNearbyElement(
+                        elementProperties.x, elementProperties.y,
+                        (elementProperties.width + xPadding), yPadding
+                    );
+                    component.connectionTwo = !otherNearbyElement;
                 }
             break;
             case "horizontal":
@@ -524,12 +617,11 @@ function handleConnection(connection, component = {}) {
         }
     }
 
-    console.log("nearbyElement: ");
-    console.dir(nearbyElement);
-
+    console.log("nearbyElement: ", nearbyElement);
     console.log("New Component: ", component);
 
-    if (nearbyElement && nearbyElement.children.length === 0) {
+    /* Auto-complete nearby element logic */
+    /*if (nearbyElement && nearbyElement.children.length === 0) {
         let nearbyElementComponent = {
             type: null,
             degree: null,
@@ -538,17 +630,21 @@ function handleConnection(connection, component = {}) {
         let nearbyElementParentOrientation = null;
 
         if (nearbyElement.parentElement.className.includes("bracket")) {
-            nearbyElementComponent.type = "timber";
+            if (nearbyElement.dataset.connection === "three") {
+                nearbyElementComponent.type = "bracket";
+            } else {
+                nearbyElementComponent.type = "timber";
 
-            nearbyElementParentOrientation = nearbyElement
-                                                .parentElement
-                                                .classList.item(1).split("-").slice(1)[1];
-            const nearbyElementConnection = nearbyElement.className.split("-").slice(1);
+                nearbyElementParentOrientation = nearbyElement
+                                                    .parentElement
+                                                    .classList.item(1).split("-").slice(1)[1];
+                const nearbyElementConnection = nearbyElement.className.split("-").slice(1);
 
-            nearbyElementComponent.orientation = orientations
-                                                    [nearbyElementComponent.type]
-                                                    [nearbyElementParentOrientation]
-                                                    [nearbyElementConnection];
+                nearbyElementComponent.orientation = orientations
+                                                        [nearbyElementComponent.type]
+                                                        [nearbyElementParentOrientation]
+                                                        [nearbyElementConnection];
+            }
         } else if (nearbyElement.parentElement.className.includes("timber")) {
             nearbyElementComponent.type = "bracket";
             nearbyElementComponent.degree = "ninety";
@@ -569,17 +665,21 @@ function handleConnection(connection, component = {}) {
         }
 
         addComponent(nearbyElement, nearbyElementComponent);
-    }
+    }*/
 
     addComponent(connection, component);
 
     //dialog(`${swapType(parentType)}`, "hide");
 }
 
+function handleStack() {
+
+}
+
 /* START Events */
 window.connectionClick = (e) => {
     clickedConnection = e.target || e;
-    //dialog(`${swapType(connectionParentType(clickedConnection))}`, "show");
+    //dialog(`${swapType(clickedConnection.parentElement.dataset.type)}`, "show");
     applyConnection();
 };
 
@@ -606,13 +706,16 @@ window.applyConnection = function() {
         return;
     }
 
-    const type = swapType(connectionParentType(clickedConnection));
+    const connectionType = clickedConnection.dataset.connection;
+    const type = (connectionType === "three") ? "bracket" : swapType(clickedConnection.parentElement.dataset.type);
     //dialogElement = document.getElementById(`${type}Dialog`);
     handleConnection(clickedConnection, {
         type,
         degree: (type === "bracket" ? document.getElementById("bracketComponentDegree").value : null),
         orientation: (type === "bracket" ? document.getElementById("bracketComponentOrientation").value : null)
     });
+
+    handleStack();
 };
 
 window.openSplitterSide = function() {
@@ -690,9 +793,9 @@ window.degreeChange = function(e) {
 window.colorChange = function(e) {
     const parentId = e.target.parentElement.id;
     let color;
-    let selector;
+    let type;
     if (parentId.includes("bracket")) {
-        selector = ".bracket-container";
+        type = "bracket";
         switch (e.target.value) {
             case "black":
             color = "black";
@@ -702,7 +805,7 @@ window.colorChange = function(e) {
             break;
         }
     } else if (parentId.includes("timber")) {
-        selector = ".timber-container";
+        type = "timber";
         switch (e.target.value) {
             case "chestnut":
             color = "saddlebrown";
@@ -712,7 +815,7 @@ window.colorChange = function(e) {
             break;
         }
     }
-    const elements = document.querySelectorAll(selector);
+    const elements = document.querySelectorAll(`[data-type="${type}"]`);
     for (var i = 0; i < elements.length; i++) {
         elements[i].style.backgroundColor = color;
     }

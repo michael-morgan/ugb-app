@@ -4,149 +4,207 @@
     background-image: url(house_test.jpg);
 }
 
-.bracket-container.first {
+/* Bracket Styling */
+[data-first="true"] {
     position: absolute;
-    /*top: 1000px;
-    left: 1200px;*/
-    /*transform: rotate(4deg);*/
 }
 
-.bracket-container {
+[data-type="bracket"] {
+    visibility: visible;
     position: relative;
     top: 0;
     left: 0;
     width: 75px;
     height: 75px;
     background-color: black;
+    outline: 2px solid rgb(53, 53, 53);
 }
 
 /* Bracket 90 Degrees Bottom Right */
-.bracket-ninety-br>.connection-one {
+[data-type="bracket"][data-degree="ninety"][data-orientation="br"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 0;
     left: -150px;
     width: 150px;
     height: 75px;
-    background-color: lightgreen;
 }
 
-.bracket-ninety-br>.connection-two {
+[data-type="bracket"][data-degree="ninety"][data-orientation="br"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: -150px;
     left: 0;
     width: 75px;
     height: 150px;
-    background-color: lightgreen;
+}
+
+[data-type="bracket"][data-degree="ninety"][data-orientation="br"]
+    > [data-type="connection"][data-connection="three"] {
+    position: absolute;
+    top: -37.5px;
+    left: -37.5px;
+    width: 75px;
+    height: 75px;
 }
 
 /* Bracket 90 Degrees Bottom Left */
-.bracket-ninety-bl>.connection-one {
+[data-type="bracket"][data-degree="ninety"][data-orientation="bl"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: -150px;
     left: 0;
     width: 75px;
     height: 150px;
-    background-color: lightgreen;
 }
 
-.bracket-ninety-bl>.connection-two {
+[data-type="bracket"][data-degree="ninety"][data-orientation="bl"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 0;
     left: 75px;
     width: 150px;
     height: 75px;
-    background-color: lightgreen;
+}
+
+[data-type="bracket"][data-degree="ninety"][data-orientation="bl"]
+    > [data-type="connection"][data-connection="three"] {
+    position: absolute;
+    top: -37.5px;
+    left: -37.5px;
+    width: 75px;
+    height: 75px;
 }
 
 /* Bracket 90 Degrees Top Right */
-.bracket-ninety-tr>.connection-one {
+[data-type="bracket"][data-degree="ninety"][data-orientation="tr"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 0;
     left: -150px;
     width: 150px;
     height: 75px;
-    background-color: lightgreen;
 }
 
-.bracket-ninety-tr>.connection-two {
+[data-type="bracket"][data-degree="ninety"][data-orientation="tr"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 75px;
     left: 0;
     width: 75px;
     height: 150px;
-    background-color: lightgreen;
+}
+
+[data-type="bracket"][data-degree="ninety"][data-orientation="tr"]
+    > [data-type="connection"][data-connection="three"] {
+    position: absolute;
+    top: -37.5px;
+    left: -37.5px;
+    width: 75px;
+    height: 75px;
 }
 
 /* Bracket 90 Degrees Top Left */
-.bracket-ninety-tl>.connection-one {
+[data-type="bracket"][data-degree="ninety"][data-orientation="tl"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 75px;
     left: 0;
     width: 75px;
     height: 150px;
-    background-color: lightgreen;
 }
 
-.bracket-ninety-tl>.connection-two {
+[data-type="bracket"][data-degree="ninety"][data-orientation="tl"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 0;
     left: 75px;
     width: 150px;
     height: 75px;
-    background-color: lightgreen;
+}
+
+[data-type="bracket"][data-degree="ninety"][data-orientation="tl"]
+    > [data-type="connection"][data-connection="three"] {
+    position: absolute;
+    top: -37.5px;
+    left: -37.5px;
+    width: 75px;
+    height: 75px;
 }
 
 /* Bracket 180 Degrees Horizontal */
-.bracket-oneeighty-horizontal>.connection-one {
+[data-type="bracket"][data-degree="oneeighty"][data-orientation="horizontal"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 0;
     left: -150px;
     width: 150px;
     height: 75px;
-    background-color: lightgreen;
 }
 
-.bracket-oneeighty-horizontal>.connection-two {
+[data-type="bracket"][data-degree="oneeighty"][data-orientation="horizontal"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 0;
     left: 75px;
     width: 150px;
     height: 75px;
-    background-color: lightgreen;
+}
+
+[data-type="bracket"][data-degree="oneeighty"][data-orientation="horizontal"]
+    > [data-type="connection"][data-connection="three"] {
+    position: absolute;
+    top: -37.5px;
+    left: -37.5px;
+    width: 75px;
+    height: 75px;
 }
 
 /* Bracket 180 Degrees Vertical */
-.bracket-oneeighty-vertical>.connection-one {
+[data-type="bracket"][data-degree="oneeighty"][data-orientation="vertical"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: -150px;
     left: 0;
     width: 75px;
     height: 150px;
-    background-color: lightgreen;
 }
 
-.bracket-oneeighty-vertical>.connection-two {
+[data-type="bracket"][data-degree="oneeighty"][data-orientation="vertical"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 75px;
     left: 0;
     width: 75px;
     height: 150px;
-    background-color: lightgreen;
 }
 
-.timber-container {
+[data-type="bracket"][data-degree="oneeighty"][data-orientation="vertical"]
+    > [data-type="connection"][data-connection="three"] {
+    position: absolute;
+    top: -37.5px;
+    left: -37.5px;
+    width: 75px;
+    height: 75px;
+}
+/* END Bracket Styling */
+
+/* Timber Styling */
+[data-type="timber"] {
+    visibility: visible;
     position: relative;
     top: 0;
     left: 0;
     background-color: saddlebrown;
+    outline: 2px solid rgb(97, 48, 13);
 }
 
-.timber-horizontal {
+[data-type="timber"][data-orientation="horizontal"] {
     width: 150px;
     height: 75px;
 }
 
-.timber-vertical {
+[data-type="timber"][data-orientation="vertical"] {
     width: 75px;
     height: 150px;
 }
@@ -157,42 +215,62 @@
 }*/
 
 /* Timber Horizontal */
-.timber-horizontal>.connection-one {
+[data-type="timber"][data-orientation="horizontal"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 0;
     left: -75px;
     width: 75px;
     height: 75px;
-    background-color: lightgreen;
 }
 
-.timber-horizontal>.connection-two {
+[data-type="timber"][data-orientation="horizontal"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 0;
     left: 150px;
     width: 75px;
     height: 75px;
-    background-color: lightgreen;
 }
 
 /* Timber Vertical */
-.timber-vertical>.connection-one {
+[data-type="timber"][data-orientation="vertical"]
+    > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: -75px;
     left: 0;
     width: 75px;
     height: 75px;
-    background-color: lightgreen;
 }
 
-.timber-vertical>.connection-two {
+[data-type="timber"][data-orientation="vertical"]
+    > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 150px;
     left: 0;
     width: 75px;
     height: 75px;
-    background-color: lightgreen;
 }
+/* END Timber Styling */
+
+/* Connection Styling */
+
+[data-type="connection"][data-connection="one"],
+[data-type="connection"][data-connection="two"] {
+    background-color: lightgreen;
+    outline: 2px solid rgb(59, 170, 59);
+}
+
+[data-type="connection"][data-connection="three"] {
+    background-color: orange;
+    outline: 2px solid rgb(202, 134, 7);
+}
+
+[data-type="connection"][data-empty="false"] {
+    visibility: hidden;
+}
+
+/* END Connection Styling */
 
 /* Menu Styling */
 #menu h1 {
