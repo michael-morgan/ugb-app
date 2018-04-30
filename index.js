@@ -106,6 +106,7 @@ function addComponent(parent, component, clearHistory = true) {
     if (parent.dataset.connection !== "three") {
         parent.dataset.empty = "false";
     }
+
     parent.insertAdjacentHTML("beforeend", createComponent(component));
     componentCount++;
 
@@ -288,7 +289,7 @@ function handleConnection(connection, component = {}) {
             break;
         }
     } else if (component.type === "bracket") {
-        const previousBracketOrientation = (connectionType === "three")
+        let previousBracketOrientation = (connectionType === "three")
             ? connection.parentElement.dataset.orientation
             : connection.parentElement.parentElement.parentElement.dataset.orientation;
         console.log("Previous bracket orientation: ", previousBracketOrientation);
@@ -296,6 +297,17 @@ function handleConnection(connection, component = {}) {
             ? connection.parentElement.dataset.degree
             : connection.parentElement.parentElement.parentElement.dataset.degree;
         console.log("Previous bracket degree: ", previousBracketDegree);
+
+        if (previousBracketOrientation.length !== 2
+            && component.degree !== "oneeighty"
+            && connectionType !== "three") {
+                let previousBracket = connection.parentElement.parentElement.parentElement;
+                do {
+                    previousBracket = previousBracket.parentElement.parentElement.parentElement.parentElement;
+                    previousBracketOrientation = previousBracket.dataset.orientation;
+                } while (previousBracketOrientation.length !== 2);
+                previousBracket = null;
+        }
 
         switch(previousBracketOrientation) {
             case "br":
@@ -672,10 +684,6 @@ function handleConnection(connection, component = {}) {
     //dialog(`${swapType(parentType)}`, "hide");
 }
 
-function handleStack() {
-
-}
-
 /* START Events */
 window.connectionClick = (e) => {
     clickedConnection = e.target || e;
@@ -723,8 +731,6 @@ window.applyConnection = function() {
         degree: (type === "bracket" ? document.getElementById("bracketComponentDegree").value : null),
         orientation: (type === "bracket" ? document.getElementById("bracketComponentOrientation").value : null)
     });
-
-    handleStack();
 };
 
 window.openSplitterSide = function() {
@@ -738,6 +744,11 @@ window.undoConnection = function() {
     const parent = document.getElementById(removed.parent);
     recentlyRemoved.push({ "parent": removed.parent, "element": Object.assign({}, removed.element) });
     parent.children[0].remove();
+
+    if (parent.dataset.connection !== "three") {
+        parent.dataset.empty = "true";
+    }
+
     componentCount--;
 
     if (!rootEmpty()) {
