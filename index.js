@@ -110,7 +110,6 @@ function addComponent(parent, component, clearHistory = true) {
     if (parent.dataset.connection === "three") {
         component.anchor = "true";
         const parentLocation = parent.getBoundingClientRect();
-        console.log(parentLocation);
         const rootElement = document.getElementById("root");
         const pageElement = document.querySelector("body > ons-splitter > ons-splitter-content > ons-page > div.page__content");
         const thirdConnections = document.querySelectorAll("[data-type='connection'][data-connection='three']");
@@ -118,8 +117,6 @@ function addComponent(parent, component, clearHistory = true) {
             connection.style.visibility = "hidden";
         });
         rootElement.insertAdjacentHTML("beforeend", createComponent(component));
-        console.log("New Left: ", (parentLocation.left + pageElement.scrollLeft));
-        console.log("New Top: ", (parentLocation.top + pageElement.scrollTop) - (parentLocation.height + 44));
         rootElement.lastElementChild.style.left = `${(parentLocation.left + pageElement.scrollLeft)}px`;
         rootElement.lastElementChild.style.top = `${
             (parentLocation.top + pageElement.scrollTop) - ((
@@ -699,7 +696,15 @@ window.undoConnection = function() {
     const parent = document.getElementById(removed.parent);
     recentlyRemoved.push({ "parent": removed.parent, "element": Object.assign({}, removed.element) });
     if (parent.dataset.connection === "three") {
-        document.getElementById("root").lastElementChild.remove();
+        const rootElement = document.getElementById("root");
+        rootElement.lastElementChild.remove();
+
+        const thirdConnections = document.querySelectorAll(
+            `#${rootElement.lastElementChild.id} [data-type="connection"][data-connection="three"]`
+        );
+        thirdConnections.forEach((connection) => {
+            connection.style.visibility = "visible";
+        });
     } else {
         parent.lastElementChild.remove();
     }
