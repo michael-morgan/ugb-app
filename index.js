@@ -47,16 +47,16 @@ function getNearbyElement(x, y, xoffset, yoffset) {
     );
 }
 
-function createComponent({ type, degree, orientation, connectionOne, connectionTwo, first }) {
+function createComponent({ type, degree, orientation, connectionOne, connectionTwo, anchor }) {
     var componentId = `component${componentCount + 1}`;
     return `
         <div
             id="${componentId}"
-            class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation} ${first ? 'first' : ''}"
+            class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation}"
             data-type="${type}"
             data-degree="${degree}"
             data-orientation="${orientation}"
-            data-first="${first}"
+            data-anchor="${anchor}"
         >
             ${connectionOne
                 ?  `<div
@@ -107,10 +107,32 @@ function addComponent(parent, component, clearHistory = true) {
         parent.dataset.empty = "false";
     }
 
-    parent.insertAdjacentHTML("beforeend", createComponent(component));
+    if (parent.dataset.connection === "three") {
+        component.anchor = "true";
+        const parentLocation = parent.getBoundingClientRect();
+        console.log(parentLocation);
+        const rootElement = document.getElementById("root");
+        const pageElement = document.querySelector("body > ons-splitter > ons-splitter-content > ons-page > div.page__content");
+        const thirdConnections = document.querySelectorAll("[data-type='connection'][data-connection='three']");
+        thirdConnections.forEach((connection) => {
+            connection.style.visibility = "hidden";
+        });
+        rootElement.insertAdjacentHTML("beforeend", createComponent(component));
+        console.log("New Left: ", (parentLocation.left + pageElement.scrollLeft));
+        console.log("New Top: ", (parentLocation.top + pageElement.scrollTop) - (parentLocation.height + 44));
+        rootElement.lastElementChild.style.left = `${(parentLocation.left + pageElement.scrollLeft)}px`;
+        rootElement.lastElementChild.style.top = `${
+            (parentLocation.top + pageElement.scrollTop) - ((
+                parentLocation.height * (rootElement.childElementCount - 1)
+            ) + 44)
+        }px`;
+    } else {
+        parent.insertAdjacentHTML("beforeend", createComponent(component));
+    }
+
     componentCount++;
 
-    if (componentCount > 1) {
+    if (parent.id !== "root") {
         parent.removeAttribute("onclick");
         parent.removeEventListener("click", connectionClick, true);
     }
@@ -130,7 +152,7 @@ function addComponent(parent, component, clearHistory = true) {
 }
 
 function setFirstBracketLocation() {
-    const firstBracket = document.querySelector("[data-first='true']");
+    const firstBracket = document.getElementById("root").firstElementChild;
     firstBracket.style.left = `${(firstBracketLocation.x - (firstBracket.clientWidth / 2))}px`;
     firstBracket.style.top = `${(firstBracketLocation.y - firstBracket.clientHeight / 2)}px`;
 }
@@ -144,6 +166,20 @@ function appendPrice(type, modifier = 1) {
         price += (modifier * 10);
     }
     priceElement.innerHTML = price.toFixed(2);
+}
+
+function anchorEqual(a, b) {
+    if (a == null || b == null) { return false; }
+
+    while ((a = a.parentElement) && a.dataset.anchor !== "true" && a.id !== "root");
+    while ((b = b.parentElement) && b.dataset.anchor !== "true" && b.id !== "root");
+
+    if (a == null || b == null) { return false; }
+    if (a.id === "root" || b.id === "root") { return false; }
+
+    console.log("A ID: ", a.id, " B ID: ", b.id);
+
+    return a.id === b.id;
 }
 
 window.dialog = function(type, state) {
@@ -191,98 +227,98 @@ function handleConnection(connection, component = {}) {
         switch(parentOrientation) {
             case "br":
                 if(connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
-                    );
+                    ), connection);
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
-                    );
+                    ), connection);
                 }
 
                 component.connectionOne = !nearbyElement;
             break;
             case "bl":
                 if(connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
-                    );
+                    ), connection);
 
                     component.connectionOne = !nearbyElement;
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
-                    );
+                    ), connection);
 
                     component.connectionTwo = !nearbyElement;
                 }
             break;
             case "tr":
                 if(connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
-                    );
+                    ), connection);
 
                     component.connectionOne = !nearbyElement;
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
-                    );
+                    ), connection);
 
                     component.connectionTwo = !nearbyElement;
                 }
             break;
             case "tl":
                 if(connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
-                    );
+                    ), connection);
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
-                    );
+                    ), connection);
                 }
 
                 component.connectionTwo = !nearbyElement;
             break;
             case "horizontal":
                 if(connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
-                    );
+                    ), connection);
 
                     component.connectionOne = !nearbyElement;
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
-                    );
+                    ), connection);
 
                     component.connectionTwo = !nearbyElement;
                 }
             break;
             case "vertical":
                 if(connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
-                    );
+                    ), connection);
 
                     component.connectionOne = !nearbyElement;
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
-                    );
+                    ), connection);
 
                     component.connectionTwo = !nearbyElement;
                 }
@@ -313,10 +349,10 @@ function handleConnection(connection, component = {}) {
             case "br":
                 if (parentOrientation === "horizontal") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             -xPadding, yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                         break;
                     }
@@ -326,24 +362,24 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, -yPadding
-                        );
+                        ), connection);
                     } else if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, (elementProperties.height + yPadding)
-                        );
+                        ), connection);
                     }
 
                     component.connectionOne = !nearbyElement;
                 } else if (parentOrientation === "vertical") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, -yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                         break;
                     }
@@ -353,16 +389,16 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             -xPadding, yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                     } else if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             (elementProperties.width + xPadding), yPadding
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                     }
                 } else if (parentOrientation === "br") {
@@ -370,25 +406,17 @@ function handleConnection(connection, component = {}) {
                         component.orientation = "br";
                     }
 
-                    nearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        -xPadding, yPadding
-                    );
-                    component.connectionOne = !nearbyElement;
-                    otherNearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        xPadding, -yPadding
-                    );
-                    component.connectionTwo = !otherNearbyElement;
+                    component.connectionOne = true;
+                    component.connectionTwo = true;
                 }
             break;
             case "bl":
                 if (parentOrientation === "horizontal") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             (elementProperties.width + xPadding), yPadding
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                         break;
                     }
@@ -398,24 +426,24 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, -yPadding
-                        );
+                        ), connection);
                     } else if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, (elementProperties.height + yPadding)
-                        );
+                        ), connection);
                     }
 
                     component.connectionTwo = !nearbyElement;
                 } else if (parentOrientation === "vertical") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, -yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                         break;
                     }
@@ -425,16 +453,16 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             (elementProperties.width + xPadding), yPadding
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                     } else if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             -xPadding, yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                     }
                 } else if (parentOrientation === "bl") {
@@ -442,25 +470,17 @@ function handleConnection(connection, component = {}) {
                         component.orientation = "bl";
                     }
 
-                    nearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        xPadding, -yPadding
-                    );
-                    component.connectionOne = !nearbyElement;
-                    otherNearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        (elementProperties.width + xPadding), yPadding
-                    );
-                    component.connectionTwo = !otherNearbyElement;
+                    component.connectionOne = true;
+                    component.connectionTwo = true;
                 }
             break;
             case "tr":
                 if (parentOrientation === "horizontal") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             -xPadding, yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                         break;
                     }
@@ -470,23 +490,23 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "tl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, (elementProperties.height + yPadding)
-                        );
+                        ), connection);
                     } else if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, -yPadding
-                        );
+                        ), connection);
                     }
                     component.connectionOne = !nearbyElement;
                 } else if (parentOrientation === "vertical") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, (elementProperties.height + yPadding)
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                         break;
                     }
@@ -496,16 +516,16 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             -xPadding, yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                     } else if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             (elementProperties.width + xPadding), yPadding
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                     }
                 } else if (parentOrientation === "tr") {
@@ -513,25 +533,17 @@ function handleConnection(connection, component = {}) {
                         component.orientation = "tr";
                     }
 
-                    nearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        -xPadding, yPadding
-                    );
-                    component.connectionOne = !nearbyElement;
-                    otherNearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        xPadding, (elementProperties.height + yPadding)
-                    );
-                    component.connectionTwo = !otherNearbyElement;
+                    component.connectionOne = true;
+                    component.connectionTwo = true;
                 }
             break;
             case "tl":
                 if (parentOrientation === "horizontal") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             (elementProperties.width + xPadding), yPadding
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                         break;
                     }
@@ -541,23 +553,23 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "tr") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, (elementProperties.height + yPadding)
-                        );
+                        ), connection);
                     } else if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, -yPadding
-                        );
+                        ), connection);
                     }
                     component.connectionTwo = !nearbyElement;
                 } else if (parentOrientation === "vertical") {
                     if (component.orientation.length !== 2) {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             xPadding, (elementProperties.height + yPadding)
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                         break;
                     }
@@ -567,16 +579,16 @@ function handleConnection(connection, component = {}) {
                     }
 
                     if (component.orientation === "bl") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             (elementProperties.width + xPadding), yPadding
-                        );
+                        ), connection);
                         component.connectionTwo = !nearbyElement;
                     } else if (component.orientation === "br") {
-                        nearbyElement = getNearbyElement(
+                        nearbyElement = anchorEqual(getNearbyElement(
                             elementProperties.x, elementProperties.y,
                             -xPadding, yPadding
-                        );
+                        ), connection);
                         component.connectionOne = !nearbyElement;
                     }
                 } else if (parentOrientation === "tl") {
@@ -584,100 +596,43 @@ function handleConnection(connection, component = {}) {
                         component.orientation = "tl";
                     }
 
-                    nearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        xPadding, (elementProperties.height + yPadding)
-                    );
-                    component.connectionOne = !nearbyElement;
-                    otherNearbyElement = getNearbyElement(
-                        elementProperties.x, elementProperties.y,
-                        (elementProperties.width + xPadding), yPadding
-                    );
-                    component.connectionTwo = !otherNearbyElement;
+                    component.connectionOne = true;
+                    component.connectionTwo = true;
                 }
             break;
             case "horizontal":
                 if (connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         -xPadding, yPadding
-                    );
+                    ), connection);
                     component.connectionOne = !nearbyElement;
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         (elementProperties.width + xPadding), yPadding
-                    );
+                    ), connection);
                     component.connectionTwo = !nearbyElement;
                 }
             break;
             case "vertical":
                 if (connectionType === "one") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, -yPadding
-                    );
+                    ), connection);
                     component.connectionOne = !nearbyElement;
                 } else if (connectionType === "two") {
-                    nearbyElement = getNearbyElement(
+                    nearbyElement = anchorEqual(getNearbyElement(
                         elementProperties.x, elementProperties.y,
                         xPadding, (elementProperties.height + yPadding)
-                    );
+                    ), connection);
                     component.connectionTwo = !nearbyElement;
                 }
             break;
         }
     }
-
-    console.log("nearbyElement: ", nearbyElement);
     console.log("New Component: ", component);
-
-    /* Auto-complete nearby element logic */
-    /*if (nearbyElement && nearbyElement.children.length === 0) {
-        let nearbyElementComponent = {
-            type: null,
-            degree: null,
-            orientation: null,
-        };
-        let nearbyElementParentOrientation = null;
-
-        if (nearbyElement.parentElement.className.includes("bracket")) {
-            if (nearbyElement.dataset.connection === "three") {
-                nearbyElementComponent.type = "bracket";
-            } else {
-                nearbyElementComponent.type = "timber";
-
-                nearbyElementParentOrientation = nearbyElement
-                                                    .parentElement
-                                                    .classList.item(1).split("-").slice(1)[1];
-                const nearbyElementConnection = nearbyElement.className.split("-").slice(1);
-
-                nearbyElementComponent.orientation = orientations
-                                                        [nearbyElementComponent.type]
-                                                        [nearbyElementParentOrientation]
-                                                        [nearbyElementConnection];
-            }
-        } else if (nearbyElement.parentElement.className.includes("timber")) {
-            nearbyElementComponent.type = "bracket";
-            nearbyElementComponent.degree = "ninety";
-
-            const previousNearbyBracketOrientation = nearbyElement
-                                                        .parentElement
-                                                        .parentElement
-                                                        .parentElement
-                                                        .classList.item(1).split("-").slice(1)[1];
-            nearbyElementParentOrientation = nearbyElement
-                                                .parentElement
-                                                .classList.item(1).split("-").slice(1)[0];
-
-            nearbyElementComponent.orientation = orientations
-                                                    [nearbyElementComponent.type]
-                                                    [previousNearbyBracketOrientation]
-                                                    [nearbyElementParentOrientation];
-        }
-
-        addComponent(nearbyElement, nearbyElementComponent);
-    }*/
 
     addComponent(connection, component);
 
@@ -706,7 +661,7 @@ window.applyConnection = function() {
             orientation: document.getElementById("bracketComponentOrientation").value,
             connectionOne: true,
             connectionTwo: true,
-            first: true
+            anchor: "true"
         });
 
         setFirstBracketLocation();
@@ -743,7 +698,11 @@ window.undoConnection = function() {
     const removed = recentlyAdded.pop();
     const parent = document.getElementById(removed.parent);
     recentlyRemoved.push({ "parent": removed.parent, "element": Object.assign({}, removed.element) });
-    parent.children[0].remove();
+    if (parent.dataset.connection === "three") {
+        document.getElementById("root").lastElementChild.remove();
+    } else {
+        parent.lastElementChild.remove();
+    }
 
     if (parent.dataset.connection !== "three") {
         parent.dataset.empty = "true";
@@ -770,7 +729,7 @@ window.redoConnection = function() {
     const parent = document.getElementById(added.parent);
     addComponent(parent, added.element, false);
 
-    if (added.parent === "root") {
+    if (added.parent === "root" && parent.childElementCount === 1) {
         setFirstBracketLocation();
     }
 

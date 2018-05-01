@@ -2,13 +2,10 @@
     width: 1920px;
     height: 1080px;
     background-image: url(house_test.jpg);
+    background-repeat: no-repeat;
 }
 
 /* Bracket Styling */
-[data-first="true"] {
-    position: absolute;
-}
-
 [data-type="bracket"] {
     visibility: visible;
     position: relative;
@@ -264,6 +261,11 @@
 [data-type="connection"][data-connection="three"] {
     background-color: orange;
     outline: 2px solid rgb(202, 134, 7);
+}
+
+[data-type="bracket"]
+    > [data-type="connection"][data-connection="three"] {
+    z-index: 1;
 }
 
 [data-type="connection"][data-empty="false"] {
