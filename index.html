@@ -16,9 +16,9 @@
                 <ons-page>
                     <h1>My Garden</h1>
                     <ons-list>
-                        <ons-list-item tappable>New</ons-list-item>
-                        <ons-list-item tappable>Open</ons-list-item>
-                        <ons-list-item tappable>Save</ons-list-item>
+                        <ons-list-item onclick="newHandler()" tappable>New</ons-list-item>
+                        <ons-list-item onclick="openHandler()" tappable>Open</ons-list-item>
+                        <ons-list-item onclick="saveHandler()" tappable>Save</ons-list-item>
                     </ons-list>
                     <ons-list>
                         <ons-list-item>
@@ -44,7 +44,7 @@
                             <ons-toolbar-button onclick="openSplitterSide()">
                                 <ons-icon icon="md-menu"></ons-icon>
                             </ons-toolbar-button>
-                            <ons-toolbar-button id="saveButton" onclick="">
+                            <ons-toolbar-button id="saveButton" onclick="saveHandler()">
                                 <ons-icon size="20px" icon="md-save"></ons-icon>
                                 <span>Save</span>
                             </ons-toolbar-button>
@@ -67,7 +67,7 @@
                         <div class="center" style="width:100%;">
                             <ons-toolbar-button onclick="swapSubToolbar()">
                                 <ons-icon size="20px" icon="md-redo"></ons-icon>
-                                <span id="componentType">B</span>
+                                <span id="componentType">T</span>
                             </ons-toolbar-button>
                             <span class="sub-toolbar-spacer">|</span>
                             <div id="bracketTools">

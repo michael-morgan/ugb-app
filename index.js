@@ -174,8 +174,6 @@ function anchorEqual(a, b) {
     if (a == null || b == null) { return false; }
     if (a.id === "root" || b.id === "root") { return false; }
 
-    console.log("A ID: ", a.id, " B ID: ", b.id);
-
     return a.id === b.id;
 }
 
@@ -751,12 +749,12 @@ window.swapSubToolbar = function() {
 
     if (componentType.textContent === "B") {
         componentType.textContent = "T";
-        bracketTools.style.display = "none";
-        timberTools.style.display = "inline-block";
-    } else {
-        componentType.textContent = "B";
         timberTools.style.display = "none";
         bracketTools.style.display = "inline-block";
+    } else {
+        componentType.textContent = "B";
+        bracketTools.style.display = "none";
+        timberTools.style.display = "inline-block";
     }
 };
 
@@ -803,6 +801,33 @@ window.colorChange = function(e) {
     for (var i = 0; i < elements.length; i++) {
         elements[i].style.backgroundColor = color;
     }
+};
+
+window.newHandler = function(e) {
+    document.getElementById("root").innerHTML = "";
+    document.getElementById("price").innerHTML = "0.00";
+    recentlyRemoved = [];
+    recentlyAdded = [];
+    document.getElementById("undoButton").setAttribute("disabled", "");
+    document.getElementById("redoButton").setAttribute("disabled", "");
+
+    document.getElementById("menu").close();
+};
+
+window.openHandler = function(e) {
+    const saveData = localStorage.getItem("saveData");
+    if (saveData) {
+        document.getElementById("root").innerHTML = saveData;
+    }
+    document.getElementById("menu").close();
+};
+
+window.saveHandler = function(e) {
+    const rootElement = document.getElementById("root");
+    if (rootElement.childElementCount) {
+        localStorage.setItem("saveData", rootElement.innerHTML);
+    }
+    document.getElementById("menu").close();
 };
 
 function handleClick(e) {
