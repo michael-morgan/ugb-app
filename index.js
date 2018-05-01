@@ -177,6 +177,12 @@ function appendPrice(type, modifier = 1) {
     priceElement.innerHTML = price.toFixed(2);
 }
 
+function calculatePrice() {
+    const timberCount = document.querySelectorAll("[data-type='timber']").length;
+    const bracketCount = document.querySelectorAll("[data-type='bracket']").length;
+    document.getElementById("price").innerHTML = ((timberCount * 25) + (bracketCount * 10)).toFixed(2);
+}
+
 function anchorEqual(a, b) {
     if (a == null || b == null) { return false; }
 
@@ -831,6 +837,7 @@ window.openHandler = function(e) {
     const saveData = localStorage.getItem("saveData");
     if (saveData) {
         document.getElementById("root").innerHTML = saveData;
+        calculatePrice();
     }
     document.getElementById("menu").close();
 };
