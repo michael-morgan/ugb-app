@@ -31,6 +31,8 @@ var recentlyAdded = [], recentlyRemoved = [];
 var componentCount = 0;
 
 var firstBracketLocation = { x: 0, y: 0 };
+
+var useOwnTimber = false;
 /* END Locals */
 
 window.scroll(width/2, height/2);
@@ -157,7 +159,7 @@ function addComponent(parent, component, clearHistory = true) {
         document.getElementById("redoButton").setAttribute("disabled", "");
     }
 
-    appendPrice(component.type);
+    calculatePrice();
 }
 
 function setFirstBracketLocation() {
@@ -178,7 +180,7 @@ function appendPrice(type, modifier = 1) {
 }
 
 function calculatePrice() {
-    const timberCount = document.querySelectorAll("[data-type='timber']").length;
+    const timberCount = useOwnTimber ? 0 : document.querySelectorAll("[data-type='timber']").length;
     const bracketCount = document.querySelectorAll("[data-type='bracket']").length;
     document.getElementById("price").innerHTML = ((timberCount * 25) + (bracketCount * 10)).toFixed(2);
 }
@@ -741,7 +743,7 @@ window.undoConnection = function() {
         document.getElementById("undoButton").setAttribute("disabled", "");
     }
 
-    appendPrice(removed.element.type, -1);
+    calculatePrice();
 };
 
 window.redoConnection = function() {
@@ -884,6 +886,12 @@ window.lengthChange = function(e) {
             break;
         }
     });
+};
+
+window.useOwnTimberHandler = function(e) {
+    useOwnTimber = e.value;
+    calculatePrice();
+    document.getElementById("menu").close();
 };
 
 function handleClick(e) {
