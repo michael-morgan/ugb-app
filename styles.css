@@ -22,18 +22,18 @@
     > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 0;
-    left: -150px;
-    width: 150px;
+    left: -120px;
+    width: 120px;
     height: 75px;
 }
 
 [data-type="bracket"][data-degree="ninety"][data-orientation="br"]
     > [data-type="connection"][data-connection="two"] {
     position: absolute;
-    top: -150px;
+    top: -120px;
     left: 0;
     width: 75px;
-    height: 150px;
+    height: 120px;
 }
 
 [data-type="bracket"][data-degree="ninety"][data-orientation="br"]
@@ -49,10 +49,10 @@
 [data-type="bracket"][data-degree="ninety"][data-orientation="bl"]
     > [data-type="connection"][data-connection="one"] {
     position: absolute;
-    top: -150px;
+    top: -120px;
     left: 0;
     width: 75px;
-    height: 150px;
+    height: 120px;
 }
 
 [data-type="bracket"][data-degree="ninety"][data-orientation="bl"]
@@ -60,7 +60,7 @@
     position: absolute;
     top: 0;
     left: 75px;
-    width: 150px;
+    width: 120px;
     height: 75px;
 }
 
@@ -78,8 +78,8 @@
     > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 0;
-    left: -150px;
-    width: 150px;
+    left: -120px;
+    width: 120px;
     height: 75px;
 }
 
@@ -89,7 +89,7 @@
     top: 75px;
     left: 0;
     width: 75px;
-    height: 150px;
+    height: 120px;
 }
 
 [data-type="bracket"][data-degree="ninety"][data-orientation="tr"]
@@ -108,7 +108,7 @@
     top: 75px;
     left: 0;
     width: 75px;
-    height: 150px;
+    height: 120px;
 }
 
 [data-type="bracket"][data-degree="ninety"][data-orientation="tl"]
@@ -116,7 +116,7 @@
     position: absolute;
     top: 0;
     left: 75px;
-    width: 150px;
+    width: 120px;
     height: 75px;
 }
 
@@ -134,8 +134,8 @@
     > [data-type="connection"][data-connection="one"] {
     position: absolute;
     top: 0;
-    left: -150px;
-    width: 150px;
+    left: -120px;
+    width: 120px;
     height: 75px;
 }
 
@@ -144,7 +144,7 @@
     position: absolute;
     top: 0;
     left: 75px;
-    width: 150px;
+    width: 120px;
     height: 75px;
 }
 
@@ -161,10 +161,10 @@
 [data-type="bracket"][data-degree="oneeighty"][data-orientation="vertical"]
     > [data-type="connection"][data-connection="one"] {
     position: absolute;
-    top: -150px;
+    top: -120px;
     left: 0;
     width: 75px;
-    height: 150px;
+    height: 120px;
 }
 
 [data-type="bracket"][data-degree="oneeighty"][data-orientation="vertical"]
@@ -173,7 +173,7 @@
     top: 75px;
     left: 0;
     width: 75px;
-    height: 150px;
+    height: 120px;
 }
 
 [data-type="bracket"][data-degree="oneeighty"][data-orientation="vertical"]
@@ -197,18 +197,18 @@
 }
 
 [data-type="timber"][data-orientation="horizontal"] {
-    width: 150px;
+    width: 120px;
     height: 75px;
 }
 
 [data-type="timber"][data-orientation="vertical"] {
     width: 75px;
-    height: 150px;
+    height: 120px;
 }
 
 /*.timber-angled {
     width: 75px;
-    height: 150px;
+    height: 120px;
 }*/
 
 /* Timber Horizontal */
@@ -225,7 +225,7 @@
     > [data-type="connection"][data-connection="two"] {
     position: absolute;
     top: 0;
-    left: 150px;
+    right: -75px;
     width: 75px;
     height: 75px;
 }
@@ -243,7 +243,7 @@
 [data-type="timber"][data-orientation="vertical"]
     > [data-type="connection"][data-connection="two"] {
     position: absolute;
-    top: 150px;
+    bottom: -75px;
     left: 0;
     width: 75px;
     height: 75px;

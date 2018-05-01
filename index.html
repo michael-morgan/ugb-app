@@ -105,8 +105,16 @@
                                     <option value="grey">Grey</option>
                                 </ons-select>
                                 <span class="sub-toolbar-spacer">|</span>
-                                <ons-range id="timberLength" min="1" max="40" step="1" value="10" disabled></ons-range>
-                                <span id="timberLengthValue">40</span>
+                                <ons-range
+                                    id="timberLength"
+                                    min="1"
+                                    max="40"
+                                    step="1"
+                                    value="6"
+                                    oninput="lengthChange(event)"
+                                    onchange="lengthChange(event)"
+                                ></ons-range>
+                                <span id="timberLengthValue">6</span>
                             </div>
                         </div>
                     </ons-toolbar>

@@ -40,28 +40,27 @@ function getNearbyElement(x, y, xoffset, yoffset) {
     console.log("Nearby element: ", element);
     return (
         (
-            element.className.includes("connection")
-            || element.className.includes("bracket")
-            || element.className.includes("timber")
+            element.dataset.type === "connection"
+            || element.dataset.type === "bracket"
+            || element.dataset.type === "timber"
         ) ? element : null
     );
 }
 
-function createComponent({ type, degree, orientation, connectionOne, connectionTwo, anchor }) {
+function createComponent({ type, orientation, connectionOne, connectionTwo, degree, length, anchor }) {
     var componentId = `component${componentCount + 1}`;
     return `
         <div
             id="${componentId}"
-            class="${type}-container ${type}${degree ? `-${degree}` : ''}-${orientation}"
             data-type="${type}"
-            data-degree="${degree}"
             data-orientation="${orientation}"
-            data-anchor="${anchor}"
+            ${degree ? `data-degree="${degree}"` : ""}
+            ${length ? `data-length="${length}"` : ""}
+            ${anchor ? `data-anchor="${anchor}"` : ""}
         >
             ${connectionOne
                 ?  `<div
                         id="${componentId}-connection1"
-                        class="connection-one"
                         onclick="connectionClick(this)"
                         data-type="connection"
                         data-connection="one"
@@ -72,7 +71,6 @@ function createComponent({ type, degree, orientation, connectionOne, connectionT
             ${connectionTwo
                 ?  `<div
                         id="${componentId}-connection2"
-                        class="connection-two"
                         onclick="connectionClick(this)"
                         data-type="connection"
                         data-connection="two"
@@ -83,7 +81,6 @@ function createComponent({ type, degree, orientation, connectionOne, connectionT
             ${type === "bracket"
                 ?  `<div
                         id="${componentId}-connection3"
-                        class="connection-three"
                         onclick="connectionClick(this)"
                         data-type="connection"
                         data-connection="three"
@@ -107,15 +104,12 @@ function addComponent(parent, component, clearHistory = true) {
         parent.dataset.empty = "false";
     }
 
+    const timberLength = document.getElementById("timberLength");
     if (parent.dataset.connection === "three") {
         component.anchor = "true";
         const parentLocation = parent.getBoundingClientRect();
         const rootElement = document.getElementById("root");
         const pageElement = document.querySelector("body > ons-splitter > ons-splitter-content > ons-page > div.page__content");
-        const thirdConnections = document.querySelectorAll("[data-type='connection'][data-connection='three']");
-        thirdConnections.forEach((connection) => {
-            connection.style.visibility = "hidden";
-        });
         rootElement.insertAdjacentHTML("beforeend", createComponent(component));
         rootElement.lastElementChild.style.left = `${(parentLocation.left + pageElement.scrollLeft)}px`;
         rootElement.lastElementChild.style.top = `${
@@ -123,8 +117,26 @@ function addComponent(parent, component, clearHistory = true) {
                 parentLocation.height * (rootElement.childElementCount - 1)
             ) + 44)
         }px`;
+        const thirdConnections = document.querySelectorAll("[data-type='connection'][data-connection='three']");
+        thirdConnections.forEach((connection) => {
+            connection.style.visibility = "hidden";
+        });
+        timberLength.dispatchEvent(new Event("change"));
     } else {
         parent.insertAdjacentHTML("beforeend", createComponent(component));
+
+        if (component.type === "timber") {
+            switch (component.orientation) {
+                case "horizontal":
+                    parent.lastElementChild.style.width = `${parent.lastElementChild.dataset.length * 20}px`;
+                break;
+                case "vertical":
+                    parent.lastElementChild.style.height = `${parent.lastElementChild.dataset.length * 20}px`;
+                break;
+            }
+        } else if (component.type === "bracket") {
+            timberLength.dispatchEvent(new Event("change"));
+        }
     }
 
     componentCount++;
@@ -678,8 +690,9 @@ window.applyConnection = function() {
     //dialogElement = document.getElementById(`${type}Dialog`);
     handleConnection(clickedConnection, {
         type,
+        orientation: (type === "bracket" ? document.getElementById("bracketComponentOrientation").value : null),
         degree: (type === "bracket" ? document.getElementById("bracketComponentDegree").value : null),
-        orientation: (type === "bracket" ? document.getElementById("bracketComponentOrientation").value : null)
+        length: (type === "timber" ? document.getElementById("timberLength").value : null)
     });
 };
 
@@ -828,6 +841,42 @@ window.saveHandler = function(e) {
         localStorage.setItem("saveData", rootElement.innerHTML);
     }
     document.getElementById("menu").close();
+};
+
+window.lengthChange = function(e) {
+    document.getElementById("timberLengthValue").innerHTML = e.target.value;
+
+    const connections = document.querySelectorAll("[data-type='bracket'] > [data-type='connection'][data-empty='true']");
+    connections.forEach((connection) => {
+        const orientation = orientations["timber"][connection.parentElement.dataset.orientation][connection.dataset.connection];
+        if (orientation === "horizontal") {
+            connection.style.width = `${e.target.value * 20}px`;
+        } else if (orientation === "vertical") {
+            connection.style.height = `${e.target.value * 20}px`;
+        }
+
+        switch (connection.parentElement.dataset.orientation) {
+            case "br":
+                if (connection.dataset.connection === "one") {
+                    connection.style.left = `${-e.target.value * 20}px`;
+                } else if (connection.dataset.connection === "two") {
+                    connection.style.top = `${-e.target.value * 20}px`;
+                }
+            break;
+            case "bl":
+            case "vertical":
+                if (connection.dataset.connection === "one") {
+                    connection.style.top = `${-e.target.value * 20}px`;
+                }
+            break;
+            case "tr":
+            case "horizontal":
+                if (connection.dataset.connection === "one") {
+                    connection.style.left = `${-e.target.value * 20}px`;
+                }
+            break;
+        }
+    });
 };
 
 function handleClick(e) {
