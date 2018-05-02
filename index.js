@@ -927,6 +927,4 @@ function handleClick(e) {
 }
 
 document.getElementById("root").addEventListener("click", handleClick, true);
-
-setTimeout(window.saveHandler, 45000);
 /* END Events */
