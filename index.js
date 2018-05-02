@@ -1,3 +1,5 @@
+import domtoimage from 'dom-to-image';
+
 /* START Constants */
 const width = window.outerWidth;
 const height = window.outerHeight;
@@ -844,10 +846,13 @@ window.openHandler = function(e) {
     document.getElementById("menu").close();
 };
 
-window.saveHandler = function(e) {
+window.saveHandler = function() {
     const rootElement = document.getElementById("root");
     if (rootElement.childElementCount) {
         localStorage.setItem("saveData", rootElement.innerHTML);
+        window.showToast("Garden saved successfully!");
+    } else {
+        window.showToast("Please create a garden before saving!");
     }
     document.getElementById("menu").close();
 };
@@ -894,6 +899,24 @@ window.useOwnTimberHandler = function(e) {
     document.getElementById("menu").close();
 };
 
+window.previewHandler = function() {
+    domtoimage.toJpeg(document.getElementById("root"), { quality: 0.95 })
+        .then(function (dataUrl) {
+            const img = new Image();
+            img.src = dataUrl;
+            const w = window.open("");
+            w.document.write(img.outerHTML);
+        })
+        .catch(function (error) {
+            window.showToast("Failed to preview garden!");
+        });
+    document.getElementById("menu").close();
+};
+
+window.showToast = function(message) {
+    ons.notification.toast(message, { timeout: 2000 });
+};
+
 function handleClick(e) {
     if (rootEmpty()) {
         firstBracketLocation.x = e.offsetX;
@@ -904,4 +927,6 @@ function handleClick(e) {
 }
 
 document.getElementById("root").addEventListener("click", handleClick, true);
+
+setTimeout(window.saveHandler, 45000);
 /* END Events */

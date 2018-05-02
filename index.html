@@ -14,7 +14,7 @@
         <ons-splitter>
             <ons-splitter-side id="menu" width="60%" collapse>
                 <ons-page>
-                    <h1>My Garden</h1>
+                    <h1 contenteditable="true">My Garden</h1>
                     <ons-list>
                         <ons-list-item onclick="newHandler()" tappable>New</ons-list-item>
                         <ons-list-item onclick="openHandler()" tappable>Open</ons-list-item>
@@ -31,9 +31,9 @@
                         </ons-list-item>
                     </ons-list>
                     <ons-list>
-                        <ons-list-item tappable>Upload Background</ons-list-item>
-                        <ons-list-item tappable>Preview</ons-list-item>
-                        <ons-list-item tappable>Add To Cart</ons-list-item>
+                        <ons-list-item tappable disabled>Upload Background</ons-list-item>
+                        <ons-list-item onclick="previewHandler()" tappable>Preview</ons-list-item>
+                        <ons-list-item tappable disabled>Add To Cart</ons-list-item>
                     </ons-list>
                 </ons-page>
             </ons-splitter-side>
