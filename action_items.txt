@@ -1,0 +1,11 @@
+Action Items:
+
+Take isometric images of Bracket & Timbers
+
+Not using own timber - 40 inch default
+
+image indicator of bracket/timber that changes based on seletion
+
+Open pre-designed ones (possibly edit)
+
+

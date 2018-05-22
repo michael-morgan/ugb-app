@@ -123,7 +123,9 @@ function addComponent(parent, component, clearHistory = true) {
         }px`;
         const thirdConnections = document.querySelectorAll("[data-type='connection'][data-connection='three']");
         thirdConnections.forEach((connection) => {
-            connection.style.visibility = "hidden";
+            if (anchorEqual(connection, parent)) {
+                connection.style.visibility = "hidden";
+            }
         });
         timberLength.dispatchEvent(new Event("change"));
     } else {
