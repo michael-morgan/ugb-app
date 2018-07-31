@@ -1,2 +1,2 @@
 # ugb-app
-Uneak Garden Beds App MBC project.
+Uneak Garden Beds App BCI project.
